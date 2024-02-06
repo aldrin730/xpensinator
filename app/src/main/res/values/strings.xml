@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">xpensinator</string>
+    <string name="btnRegister">Register</string>
+    <string name="btnLogin">Login</string>
+    <string name="btnCapture">Capture</string>
+    <string name="btnClear">Clear</string>
+    <string name="btnCopy">Copy</string>
+    <string name="hntExtract">Scanned text will be displayed here</string>
+</resources>
