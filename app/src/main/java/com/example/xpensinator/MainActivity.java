@@ -11,10 +11,14 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.Manifest;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.dhaval2404.imagepicker.ImagePicker;
@@ -28,6 +32,7 @@ import com.google.mlkit.vision.text.TextRecognizer;
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
 
 import java.io.IOException;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     Button btnCapture;
@@ -36,7 +41,8 @@ public class MainActivity extends AppCompatActivity {
     EditText txtDisplay;
     Uri imgUri;
     TextRecognizer textRecognizer;
-    private static final int REQUEST_CAMERA_CODE = 100;
+    Spinner spnExpCat;
+    private static final int REQUEST_CAMERA_CODE = 2404;
     private static final int READ_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE = 101;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +51,19 @@ public class MainActivity extends AppCompatActivity {
 
         btnCapture = findViewById(R.id.btnCapture);
         btnClear = findViewById(R.id.btnClear);
-        btnCopy = findViewById(R.id.btnCopy);
         txtDisplay = findViewById(R.id.txtDisplay);
+        spnExpCat = findViewById(R.id.spnExpCat);
 
         textRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
+
+        DBHandler dbHandler = new DBHandler(this);
+
+        List<String> expenseCategories = dbHandler.getAllExpenseCategories();
+        String[] categoriesArray = expenseCategories.toArray(new String[0]);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categoriesArray);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spnExpCat.setAdapter(adapter);
 
         // Check and request camera permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
@@ -76,6 +91,13 @@ public class MainActivity extends AppCompatActivity {
                         .start();
             }
         });
+
+        btnClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                txtDisplay.setText("");
+            }
+        });
     }
 
     @Override
@@ -89,6 +111,8 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, "An image has been selected", Toast.LENGTH_SHORT).show();
 
                     recognizeText();
+
+                    btnCapture.setText("Retake");
                 }
             } else {
                 Toast.makeText(this, "There were no images selected", Toast.LENGTH_SHORT).show();

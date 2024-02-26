@@ -5,5 +5,8 @@
     <string name="btnCapture">Capture</string>
     <string name="btnClear">Clear</string>
     <string name="btnCopy">Copy</string>
+    <string name="lblDate">Date Entered</string>
+    <string name="lblAmount">Amount</string>
+    <string name="lblExpCategory">Expense Category</string>
     <string name="hntExtract">Scanned text will be displayed here</string>
 </resources>

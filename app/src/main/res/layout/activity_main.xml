@@ -17,42 +17,109 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
-        android:layout_width="414dp"
-        android:layout_height="317dp"
+    <RelativeLayout
+        android:layout_width="396dp"
+        android:layout_height="579dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView5">
+        app:layout_constraintHorizontal_bias="0.666"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="44dp"
+            android:layout_marginEnd="61dp"
+            android:layout_toStartOf="@+id/txtDateEntererd"
+            android:text="@string/lblDate"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/txtDateEntererd"
+            tools:layout_editor_absoluteY="181dp" />
+
+        <EditText
+            android:id="@+id/txtDateEntererd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="39dp"
+            android:layout_marginEnd="18dp"
+            android:ems="10"
+            android:inputType="date"
+            tools:layout_editor_absoluteY="160dp" />
+
+        <Spinner
+            android:id="@+id/spnExpCat"
+            android:layout_width="212dp"
+            android:layout_height="43dp"
+            android:layout_below="@+id/txtDateEntererd"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="64dp"
+            android:layout_marginEnd="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtDateEntererd" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="99dp"
+            android:layout_height="49dp"
+            android:layout_below="@+id/textView"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="62dp"
+            android:layout_marginEnd="65dp"
+            android:layout_toStartOf="@+id/spnExpCat"
+            android:text="@string/lblExpCategory"
+            android:textSize="18sp"
+            app:layout_constraintTop_toBottomOf="@+id/textView"
+            tools:layout_editor_absoluteX="30dp" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView3"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="23dp"
+            android:layout_marginTop="62dp"
+            android:layout_marginEnd="74dp"
+            android:layout_toStartOf="@+id/txtDisplay"
+            android:text="@string/lblAmount"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/txtDisplay"
+            app:layout_constraintHorizontal_bias="0.031"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
         <EditText
             android:id="@+id/txtDisplay"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/spnExpCat"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="16dp"
             android:ems="10"
             android:gravity="start|top"
-            android:inputType="textMultiLine" />
-
-    </androidx.cardview.widget.CardView>
-
-    <RelativeLayout
-        android:layout_width="410dp"
-        android:layout_height="265dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView"
-        app:layout_constraintVertical_bias="0.582">
+            android:inputType="textMultiLine"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spnExpCat" />
 
         <Button
             android:id="@+id/btnCapture"
-            android:layout_width="wrap_content"
+            android:layout_width="113dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="44dp"
-            android:layout_marginTop="56dp"
-            android:layout_marginEnd="97dp"
-            android:layout_toStartOf="@+id/btnCopy"
+            android:layout_below="@+id/textView2"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="54dp"
+            android:layout_marginTop="76dp"
+            android:layout_marginEnd="52dp"
+            android:layout_toStartOf="@+id/btnClear"
             android:text="@string/btnCapture"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -61,26 +128,14 @@
             android:id="@+id/btnClear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
+            android:layout_below="@+id/txtDisplay"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="124dp"
-            android:layout_marginEnd="169dp"
+            android:layout_marginTop="87dp"
+            android:layout_marginEnd="78dp"
             android:text="@string/btnClear"
             app:layout_constraintTop_toBottomOf="@+id/btnCopy"
             tools:layout_editor_absoluteX="161dp" />
 
-        <Button
-            android:id="@+id/btnCopy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="56dp"
-            android:layout_marginEnd="77dp"
-            android:text="@string/btnCopy"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.654"
-            app:layout_constraintStart_toEndOf="@+id/btnCapture"
-            app:layout_constraintTop_toTopOf="parent" />
     </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
