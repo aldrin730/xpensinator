@@ -2,11 +2,14 @@
     <string name="app_name">xpensinator</string>
     <string name="btnRegister">Register</string>
     <string name="btnLogin">Login</string>
-    <string name="btnCapture">Capture</string>
+    <string name="btnCapture">Capture Receipt</string>
     <string name="btnClear">Clear</string>
     <string name="btnCopy">Copy</string>
+    <string name="btnEnter">Enter Expense</string>
     <string name="lblDate">Date Entered</string>
     <string name="lblAmount">Amount</string>
     <string name="lblExpCategory">Expense Category</string>
     <string name="hntExtract">Scanned text will be displayed here</string>
+    <string name="nav_open">Open</string>
+    <string name="nav_close">Close</string>
 </resources>
