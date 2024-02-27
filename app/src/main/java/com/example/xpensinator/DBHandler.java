@@ -4,8 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -13,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DBHandler extends SQLiteOpenHelper {
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
     private static final String DB_NAME = "xpensinator";
     private static final String TABLE_USERS = "Users";
     private static final String TABLE_EXPENSECATEGORIES = "Expense_Categories";
@@ -140,6 +142,57 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
 
         return categories;
+    }
+
+    public double getTotalExpensesFromDatabase() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        double totalExpenses = 0.0;
+        Cursor cursor = null;
+
+        try {
+            String query = "SELECT SUM(" + KEY_TOTAL_EXPENSE + ") FROM " + TABLE_EXPENSES;
+            cursor = db.rawQuery(query, null);
+            if (cursor.moveToFirst()) {
+                totalExpenses = cursor.getDouble(0);
+            }
+        } catch (SQLException e) {
+            Log.e("DBHandler", "Error retrieving total expenses from database: " + e.getMessage());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+
+        return totalExpenses;
+    }
+
+    public List<String> getAllExpensesFromDatabase() {
+        List<String> expensesList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        try {
+            String query = "SELECT * FROM " + TABLE_EXPENSES;
+            cursor = db.rawQuery(query, null);
+            if (cursor.moveToFirst()) {
+                do {
+                    String expenseDetails = "Category: " + cursor.getString(cursor.getColumnIndex(KEY_E_CATEGORY_NAME))
+                            + ", Amount: " + cursor.getString(cursor.getColumnIndex(KEY_TOTAL_EXPENSE))
+                            + ", Notes: " + cursor.getString(cursor.getColumnIndex(KEY_NOTES));
+                    expensesList.add(expenseDetails);
+                } while (cursor.moveToNext());
+            }
+        } catch (SQLException e) {
+            Log.e("DBHandler", "Error retrieving all expenses from database: " + e.getMessage());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+
+        return expensesList;
     }
 
 }

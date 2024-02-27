@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:padding="16dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <EditText
+        android:id="@+id/txtSetBudget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Budget"
+        android:inputType="numberDecimal"/>
+
+    <Button
+        android:id="@+id/btnSaveBudget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtSetBudget"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/mustard"
+        android:text="Save" />
+</RelativeLayout>
