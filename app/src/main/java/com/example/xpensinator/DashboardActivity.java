@@ -26,6 +26,8 @@ public class DashboardActivity extends AppCompatActivity {
     ListView expensesListView;
     ArrayAdapter<String> expensesAdapter;
     List<String> expensesList;
+    TextView txtBudgetMsg;
+    double totalExpenses;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,7 @@ public class DashboardActivity extends AppCompatActivity {
         btnBudget = findViewById(R.id.btnBudget);
         txtBudget = findViewById(R.id.txtBudget);
         txtTotalExp = findViewById(R.id.txtTotalExp);
+        txtBudgetMsg = findViewById(R.id.txtBudgetMsg);
         expensesListView = findViewById(R.id.expensesListView);
         DBHandler dbHandler = new DBHandler(this);
         btnBudget.setOnClickListener(new View.OnClickListener() {
@@ -44,12 +47,15 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
 
-        double totalExpenses = dbHandler.getTotalExpensesFromDatabase();
+        totalExpenses = dbHandler.getTotalExpensesFromDatabase();
 
         txtTotalExp.setText(String.format(Locale.getDefault(), "%.2f", totalExpenses));
 
-        expensesList = dbHandler.getAllExpensesFromDatabase();
-        expensesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, expensesList);
+        List<String> expensesList = dbHandler.getAllExpensesFromDatabase();
+
+//        expensesList = dbHandler.getAllExpensesFromDatabase();
+        ExpensesAdapter expensesAdapter = new ExpensesAdapter(this, expensesList);
+//        expensesAdapter = new ArrayAdapter<>(this, R.layout.expenses_list, expensesList);
         expensesListView.setAdapter(expensesAdapter);
         Log.d("MyTag", "expensesList size: " + expensesList.size());
     }
@@ -66,9 +72,19 @@ public class DashboardActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String newBudget = txtSetBudget.getText().toString();
-                if (txtBudget != null) {
-                    txtBudget.setText(newBudget);
+                if (txtSetBudget != null) {
+                    double newBudgetValue = Double.parseDouble(newBudget);
+                    String formattedBudget = String.format(Locale.getDefault(), "%.2f", newBudgetValue);
+                    txtBudget.setText(formattedBudget);
+
+                    if (newBudgetValue < totalExpenses) {
+                        txtBudgetMsg.setText("Warning: Budget is less than total expenses!");
+                        txtBudgetMsg.setVisibility(View.VISIBLE); // Make the message visible
+                    } else {
+                        txtBudgetMsg.setVisibility(View.GONE); // Hide the message if the budget is sufficient
+                    }
                     Toast.makeText(DashboardActivity.this, "Budget updated!", Toast.LENGTH_SHORT).show();
+
                 } else {
                     Toast.makeText(DashboardActivity.this, "Operation cancelled.", Toast.LENGTH_SHORT).show();
                 }

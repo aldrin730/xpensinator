@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DBHandler extends SQLiteOpenHelper {
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 3;
     private static final String DB_NAME = "xpensinator";
     private static final String TABLE_USERS = "Users";
     private static final String TABLE_EXPENSECATEGORIES = "Expense_Categories";
@@ -65,6 +65,7 @@ public class DBHandler extends SQLiteOpenHelper {
         String CREATE_TABLE_EXPENSES = "CREATE TABLE " + TABLE_EXPENSES + "("
                 + KEY_EXPENSE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_USER_ID + " INTEGER NOT NULL,"
+                + KEY_EXPENSE_DATE + " DATETIME NOT NULL,"
                 + KEY_E_CATEGORY_NAME + " INTEGER NOT NULL,"
                 + KEY_TOTAL_EXPENSE + " TEXT NOT NULL,"
                 + KEY_NOTES + " TEXT NOT NULL,"
@@ -106,10 +107,11 @@ public class DBHandler extends SQLiteOpenHelper {
         sqLiteDatabase.close();
     }
 
-    void insertExpense(int userId, String expCategory, String totalExpense, String notes) {
+    void insertExpense(int userId, String expDate, String expCategory, String totalExpense, String notes) {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         ContentValues cValues = new ContentValues();
         cValues.put(KEY_USER_ID, userId);
+        cValues.put(KEY_EXPENSE_DATE, expDate);
         cValues.put(KEY_E_CATEGORY_NAME, expCategory);
         cValues.put(KEY_TOTAL_EXPENSE, totalExpense);
         cValues.put(KEY_NOTES, notes);
@@ -177,9 +179,10 @@ public class DBHandler extends SQLiteOpenHelper {
             cursor = db.rawQuery(query, null);
             if (cursor.moveToFirst()) {
                 do {
-                    String expenseDetails = "Category: " + cursor.getString(cursor.getColumnIndex(KEY_E_CATEGORY_NAME))
-                            + ", Amount: " + cursor.getString(cursor.getColumnIndex(KEY_TOTAL_EXPENSE))
-                            + ", Notes: " + cursor.getString(cursor.getColumnIndex(KEY_NOTES));
+                    String expenseDetails = cursor.getString(cursor.getColumnIndex(KEY_EXPENSE_DATE))
+                            + ", " + cursor.getString(cursor.getColumnIndex(KEY_E_CATEGORY_NAME))
+                            + ", " + cursor.getString(cursor.getColumnIndex(KEY_TOTAL_EXPENSE))
+                            + ", " + cursor.getString(cursor.getColumnIndex(KEY_NOTES));
                     expensesList.add(expenseDetails);
                 } while (cursor.moveToNext());
             }

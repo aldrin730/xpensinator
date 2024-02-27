@@ -12,6 +12,7 @@
     <string name="lblExpCategory">Expense Category</string>
     <string name="lblBudget">Budget: </string>
     <string name="lblSetBudget">Set a Budget</string>
+    <string name="lblExpensesList">List of Expenses</string>
     <string name="lblTotalExpenses">Total Expenses: </string>
     <string name="lblWelcome">Welcome, User!</string>
     <string name="hntExtract">Scanned text will be displayed here</string>

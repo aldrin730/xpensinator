@@ -8,8 +8,8 @@
     tools:context=".DashboardActivity">
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/imageView"
@@ -26,14 +26,10 @@
 
         <TextView
             android:id="@+id/textView4"
-            android:layout_width="292dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="23dp"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="24dp"
-            android:layout_marginEnd="95dp"
             android:text="@string/lblWelcome"
             android:textColor="@color/black"
             android:textSize="34sp" />
@@ -42,10 +38,9 @@
             android:id="@+id/textView6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/imageView"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="48dp"
+            android:layout_below="@id/imageView"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="24dp"
             android:fontFamily="sans-serif-condensed"
             android:text="@string/lblTotalExpenses"
             android:textSize="20sp" />
@@ -54,24 +49,21 @@
             android:id="@+id/txtTotalExp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/imageView"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="48dp"
-            android:layout_marginEnd="104dp"
-            android:layout_toEndOf="@+id/textView6"
-            android:textSize="20sp" />
+            android:layout_below="@id/textView6"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:fontFamily="sans-serif-condensed"
+            android:textSize="20sp"
+            android:layout_marginBottom="16dp" />
 
         <TextView
             android:id="@+id/textView9"
-            android:layout_width="103dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textView6"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="25dp"
-            android:layout_marginTop="26dp"
-            android:layout_marginEnd="283dp"
+            android:layout_below="@id/textView6"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="45dp"
+            android:fontFamily="sans-serif-condensed"
             android:text="@string/lblBudget"
             android:textSize="20sp" />
 
@@ -79,25 +71,44 @@
             android:id="@+id/txtBudget"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/txtTotalExp"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="26dp"
-            android:layout_marginEnd="274dp"
+            android:layout_below="@id/textView9"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="19dp"
+            android:fontFamily="sans-serif-condensed"
             android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/txtBudgetMsg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtBudget"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="3dp"
+            android:fontFamily="sans-serif-condensed"
+            android:textColor="@color/red"
+            android:textSize="16sp" />
 
         <Button
             android:id="@+id/btnBudget"
             android:layout_width="131dp"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/txtBudget"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="140dp"
-            android:layout_marginTop="29dp"
-            android:layout_marginEnd="140dp"
+            android:layout_below="@id/txtBudgetMsg"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="13dp"
             android:backgroundTint="@color/mustard"
             android:text="@string/lblSetBudget" />
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/textViewX"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lblExpensesList"
+        android:fontFamily="sans-serif-black"
+        android:text="@string/lblExpensesList"
+        android:textSize="20sp" />
+
+    <include layout="@layout/expenses_list"/>
 
     <ListView
         android:id="@+id/expensesListView"

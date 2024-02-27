@@ -134,16 +134,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View v) {
                 int userid = 1;
+                String expDate = txtDateEntered.getText().toString();
                 String expCategory = spnExpCat.getSelectedItem().toString();
                 String totalExpense = txtDisplay.getText().toString();
                 String notes = txtNotes.getText().toString();
 
                 DBHandler dbHandler = new DBHandler(MainActivity.this);
 
-                dbHandler.insertExpense(userid, expCategory, totalExpense, notes);
-
-//                Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
-//                startActivity(intent);
+                dbHandler.insertExpense(userid, expDate, expCategory, totalExpense, notes);
 
                 Toast.makeText(getApplicationContext(), "Expense added successfully", Toast.LENGTH_LONG).show();
             }
