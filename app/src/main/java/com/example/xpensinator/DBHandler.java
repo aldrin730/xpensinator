@@ -63,13 +63,11 @@ public class DBHandler extends SQLiteOpenHelper {
         String CREATE_TABLE_EXPENSES = "CREATE TABLE " + TABLE_EXPENSES + "("
                 + KEY_EXPENSE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_USER_ID + " INTEGER NOT NULL,"
-                + KEY_E_CATEGORY_ID + " INTEGER NOT NULL,"
-                + KEY_IMAGE_URL + " TEXT NOT NULL,"
+                + KEY_E_CATEGORY_NAME + " INTEGER NOT NULL,"
                 + KEY_TOTAL_EXPENSE + " TEXT NOT NULL,"
-                + KEY_EXPENSE_DATE + " DATETIME NOT NULL,"
                 + KEY_NOTES + " TEXT NOT NULL,"
                 + "FOREIGN KEY (" + KEY_USER_ID + ") REFERENCES " + TABLE_USERS + "(" + KEY_USER_ID + ") ON UPDATE CASCADE ON DELETE NO ACTION,"
-                + "FOREIGN KEY (" + KEY_E_CATEGORY_ID + ") REFERENCES " + TABLE_EXPENSECATEGORIES + "(" + KEY_E_CATEGORY_ID + ") ON UPDATE CASCADE ON DELETE NO ACTION"
+                + "FOREIGN KEY (" + KEY_E_CATEGORY_NAME + ") REFERENCES " + TABLE_EXPENSECATEGORIES + "(" + KEY_E_CATEGORY_NAME + ") ON UPDATE CASCADE ON DELETE NO ACTION"
                 + ")";
         sqLiteDatabase.execSQL(CREATE_TABLE_EXPENSES);
 
@@ -106,14 +104,12 @@ public class DBHandler extends SQLiteOpenHelper {
         sqLiteDatabase.close();
     }
 
-    void insertExpense(int userId, int categoryId, String imageUrl, String totalExpense, String expenseDate, String notes) {
+    void insertExpense(int userId, String expCategory, String totalExpense, String notes) {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         ContentValues cValues = new ContentValues();
         cValues.put(KEY_USER_ID, userId);
-        cValues.put(KEY_E_CATEGORY_ID, categoryId);
-        cValues.put(KEY_IMAGE_URL, imageUrl);
+        cValues.put(KEY_E_CATEGORY_NAME, expCategory);
         cValues.put(KEY_TOTAL_EXPENSE, totalExpense);
-        cValues.put(KEY_EXPENSE_DATE, expenseDate);
         cValues.put(KEY_NOTES, notes);
         long expenseId = sqLiteDatabase.insert(TABLE_EXPENSES,null, cValues);
         sqLiteDatabase.close();

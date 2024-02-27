@@ -6,6 +6,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.app.Activity;
@@ -28,6 +29,7 @@ import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.text.Text;
 import com.google.mlkit.vision.text.TextRecognition;
@@ -40,15 +42,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     Button btnCapture;
     Button btnClear;
-    Button btnCopy;
+    Button btnEnter;
     EditText txtDisplay;
     Uri imgUri;
     TextRecognizer textRecognizer;
     Spinner spnExpCat;
     EditText txtDateEntered;
+    EditText txtNotes;
     private static final int REQUEST_CAMERA_CODE = 2404;
     private static final int READ_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE = 101;
     public DrawerLayout drawerLayout;
@@ -60,9 +63,11 @@ public class MainActivity extends AppCompatActivity {
 
         btnCapture = findViewById(R.id.btnCapture);
         btnClear = findViewById(R.id.btnClear);
+        btnEnter = findViewById(R.id.btnEnter);
         txtDisplay = findViewById(R.id.txtDisplay);
         spnExpCat = findViewById(R.id.spnExpCat);
         txtDateEntered = findViewById(R.id.txtDateEntered);
+        txtNotes = findViewById(R.id.txtNotes);
 
         drawerLayout = findViewById(R.id.my_drawer_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
@@ -71,6 +76,9 @@ public class MainActivity extends AppCompatActivity {
         actionBarDrawerToggle.syncState();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         textRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
 
@@ -121,6 +129,42 @@ public class MainActivity extends AppCompatActivity {
                 txtDisplay.setText("");
             }
         });
+
+        btnEnter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int userid = 1;
+                String expCategory = spnExpCat.getSelectedItem().toString();
+                String totalExpense = txtDisplay.getText().toString();
+                String notes = txtNotes.getText().toString();
+
+                DBHandler dbHandler = new DBHandler(MainActivity.this);
+
+                dbHandler.insertExpense(userid, expCategory, totalExpense, notes);
+
+//                Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
+//                startActivity(intent);
+
+                Toast.makeText(getApplicationContext(), "Expense added successfully", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.nav_enter_expense) {
+            // Handle navigation to item 1
+            Intent intent1 = new Intent(MainActivity.this, MainActivity.class);
+            startActivity(intent1);
+        } else if (id == R.id.nav_dashboard) {
+            // Handle navigation to item 2
+            Intent intent2 = new Intent(MainActivity.this, DashboardActivity.class);
+            startActivity(intent2);
+        }
+        // Close the navigation drawer after item selection
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     @Override
