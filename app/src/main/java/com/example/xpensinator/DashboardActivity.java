@@ -53,18 +53,14 @@ public class DashboardActivity extends AppCompatActivity {
 
         List<String> expensesList = dbHandler.getAllExpensesFromDatabase();
 
-//        expensesList = dbHandler.getAllExpensesFromDatabase();
         ExpensesAdapter expensesAdapter = new ExpensesAdapter(this, expensesList);
-//        expensesAdapter = new ArrayAdapter<>(this, R.layout.expenses_list, expensesList);
         expensesListView.setAdapter(expensesAdapter);
-        Log.d("MyTag", "expensesList size: " + expensesList.size());
     }
 
     private void showSetBudgetDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Set Budget");
 
-        // Inflate the layout for the dialog
         View view = LayoutInflater.from(this).inflate(R.layout.popup_set_budget, null);
         EditText txtSetBudget = view.findViewById(R.id.txtSetBudget);
         Button btnSaveBudget = view.findViewById(R.id.btnSaveBudget);
@@ -79,9 +75,9 @@ public class DashboardActivity extends AppCompatActivity {
 
                     if (newBudgetValue < totalExpenses) {
                         txtBudgetMsg.setText("Warning: Budget is less than total expenses!");
-                        txtBudgetMsg.setVisibility(View.VISIBLE); // Make the message visible
+                        txtBudgetMsg.setVisibility(View.VISIBLE);
                     } else {
-                        txtBudgetMsg.setVisibility(View.GONE); // Hide the message if the budget is sufficient
+                        txtBudgetMsg.setVisibility(View.GONE);
                     }
                     Toast.makeText(DashboardActivity.this, "Budget updated!", Toast.LENGTH_SHORT).show();
 

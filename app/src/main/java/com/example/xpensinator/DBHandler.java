@@ -35,7 +35,6 @@ public class DBHandler extends SQLiteOpenHelper {
 
     // Expenses Table
     private static final String KEY_EXPENSE_ID = "ExpenseID";
-    private static final String KEY_IMAGE_URL = "ImageURL";
     private static final String KEY_TOTAL_EXPENSE = "TotalExpense";
     private static final String KEY_EXPENSE_DATE = "ExpenseDate";
     private static final String KEY_NOTES = "Notes";
