@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Button btnCapture;
     Button btnClear;
     Button btnEnter;
+    Button btnRegister;
     EditText txtDisplay;
     Uri imgUri;
     TextRecognizer textRecognizer;
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         spnExpCat = findViewById(R.id.spnExpCat);
         txtDateEntered = findViewById(R.id.txtDateEntered);
         txtNotes = findViewById(R.id.txtNotes);
+        btnRegister = findViewById(R.id.btnRegister);
 
         drawerLayout = findViewById(R.id.my_drawer_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
@@ -146,6 +148,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Toast.makeText(getApplicationContext(), "Expense added successfully", Toast.LENGTH_LONG).show();
             }
         });
+
+        btnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent3 = new Intent(MainActivity.this, RegistrationActivity.class);
+                startActivity(intent3);
+            }
+        });
+       // return formattedDateTime;
     }
 
     @Override

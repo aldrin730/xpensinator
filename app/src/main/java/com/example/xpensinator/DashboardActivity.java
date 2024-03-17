@@ -40,6 +40,11 @@ public class DashboardActivity extends AppCompatActivity {
         txtBudgetMsg = findViewById(R.id.txtBudgetMsg);
         expensesListView = findViewById(R.id.expensesListView);
         DBHandler dbHandler = new DBHandler(this);
+
+        double lastBudget = dbHandler.getLastBudget();
+
+        String formattedLastBudget = String.format(Locale.getDefault(), "%.2f", lastBudget);
+        txtBudget.setText(formattedLastBudget);
         btnBudget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,6 +60,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         ExpensesAdapter expensesAdapter = new ExpensesAdapter(this, expensesList);
         expensesListView.setAdapter(expensesAdapter);
+       // return formattedLastBudget;
     }
 
     private void showSetBudgetDialog() {
@@ -72,6 +78,9 @@ public class DashboardActivity extends AppCompatActivity {
                     double newBudgetValue = Double.parseDouble(newBudget);
                     String formattedBudget = String.format(Locale.getDefault(), "%.2f", newBudgetValue);
                     txtBudget.setText(formattedBudget);
+
+                    DBHandler dbHandler = new DBHandler(DashboardActivity.this);
+                    dbHandler.saveBudget(newBudgetValue);
 
                     if (newBudgetValue < totalExpenses) {
                         txtBudgetMsg.setText("Warning: Budget is less than total expenses!");
