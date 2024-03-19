@@ -186,18 +186,6 @@
                 android:backgroundTint="@color/mustard"
                 android:text="@string/btnEnter" />
 
-            <Button
-                android:id="@+id/btnRegister"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/btnEnter"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="59dp"
-                android:layout_marginTop="25dp"
-                android:layout_marginEnd="228dp"
-                android:text="Register" />
-
         </RelativeLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

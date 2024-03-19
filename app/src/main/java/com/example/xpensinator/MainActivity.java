@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Button btnCapture;
     Button btnClear;
     Button btnEnter;
-    Button btnRegister;
     EditText txtDisplay;
     Uri imgUri;
     TextRecognizer textRecognizer;
@@ -57,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final int READ_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE = 101;
     public DrawerLayout drawerLayout;
     public ActionBarDrawerToggle actionBarDrawerToggle;
+    public String email;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         spnExpCat = findViewById(R.id.spnExpCat);
         txtDateEntered = findViewById(R.id.txtDateEntered);
         txtNotes = findViewById(R.id.txtNotes);
-        btnRegister = findViewById(R.id.btnRegister);
 
         drawerLayout = findViewById(R.id.my_drawer_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
@@ -89,7 +88,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String formattedDateTime = dateFormat.format(currentDate);
         txtDateEntered.setText(formattedDateTime);
 
-        DBHandler dbHandler = new DBHandler(this);
+        email = getIntent().getStringExtra("email");
+
+        DBHandler dbHandler = new DBHandler(this, email);
 
         List<String> expenseCategories = dbHandler.getAllExpenseCategories();
         String[] categoriesArray = expenseCategories.toArray(new String[0]);
@@ -135,41 +136,46 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         btnEnter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int userid = 1;
-                String expDate = txtDateEntered.getText().toString();
-                String expCategory = spnExpCat.getSelectedItem().toString();
-                String totalExpense = txtDisplay.getText().toString();
-                String notes = txtNotes.getText().toString();
+                if (email != null) {
+                    DBHandler dbHandler = new DBHandler(MainActivity.this, email);
 
-                DBHandler dbHandler = new DBHandler(MainActivity.this);
+                    int userid = dbHandler.getUserIdByEmail(email);
+                    String expDate = txtDateEntered.getText().toString();
+                    String expCategory = spnExpCat.getSelectedItem().toString();
+                    String totalExpense = txtDisplay.getText().toString();
+                    String notes = txtNotes.getText().toString();
 
-                dbHandler.insertExpense(userid, expDate, expCategory, totalExpense, notes);
+                    dbHandler.insertExpense(userid, expDate, expCategory, totalExpense, notes);
 
-                Toast.makeText(getApplicationContext(), "Expense added successfully", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Expense added successfully", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Email is null", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
-
-        btnRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent3 = new Intent(MainActivity.this, RegistrationActivity.class);
-                startActivity(intent3);
-            }
-        });
-       // return formattedDateTime;
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        final String email = getIntent().getStringExtra("email");
         int id = item.getItemId();
         if (id == R.id.nav_enter_expense) {
             // Handle navigation to item 1
             Intent intent1 = new Intent(MainActivity.this, MainActivity.class);
+            intent1.putExtra("email", email);
             startActivity(intent1);
         } else if (id == R.id.nav_dashboard) {
             // Handle navigation to item 2
             Intent intent2 = new Intent(MainActivity.this, DashboardActivity.class);
+            intent2.putExtra("email", email);
             startActivity(intent2);
+        }
+        else if (id == R.id.nav_logout) {
+            // Handle navigation to item 2
+            logout();
+            return true;
         }
         // Close the navigation drawer after item selection
         drawerLayout.closeDrawer(GravityCompat.START);
@@ -234,6 +240,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             Toast.makeText(MainActivity.this, "Image URI is null", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void logout() {
+        email = null;
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 
     }

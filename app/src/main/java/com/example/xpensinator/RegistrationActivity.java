@@ -20,6 +20,7 @@ public class RegistrationActivity extends AppCompatActivity {
     EditText txtEmail;
     EditText txtPassword;
     Button btnRegSave;
+    Button btnLoginAct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +32,9 @@ public class RegistrationActivity extends AppCompatActivity {
         txtEmail = findViewById(R.id.txtEmail);
         txtPassword = findViewById(R.id.txtPassword);
         btnRegSave = findViewById(R.id.btnRegSave);
+        btnLoginAct = findViewById(R.id.btnLoginAct);
 
-        DBHandler dbHandler = new DBHandler(this);
+        DBHandler dbHandler = new DBHandler(this, "userEmail");
 
         btnRegSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,12 +49,20 @@ public class RegistrationActivity extends AppCompatActivity {
                     return;
                 }
 
-                dbHandler.insertUser(firstName, lastName, password, email, getCurrentDateTime());
+                dbHandler.insertUser(firstName, lastName, password, email, 0.00, getCurrentDateTime());
 
                 Toast.makeText(RegistrationActivity.this, "Registration Successful", Toast.LENGTH_SHORT).show();
 
                 startActivity(new Intent(RegistrationActivity.this, LoginActivity.class));
                 finish();
+            }
+        });
+
+        btnLoginAct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
+                startActivity(intent);
             }
         });
     }

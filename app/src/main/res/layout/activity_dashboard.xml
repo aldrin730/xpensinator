@@ -1,118 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/my_drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".DashboardActivity">
+    tools:context=".MainActivity"
+    tools:ignore="HardcodedText">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="97dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="0dp"
-            android:layout_marginEnd="0dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/yellowbg" />
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="24dp"
-            android:text="@string/lblWelcome"
-            android:textColor="@color/black"
-            android:textSize="34sp" />
-
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/imageView"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="24dp"
-            android:fontFamily="sans-serif-condensed"
-            android:text="@string/lblTotalExpenses"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/txtTotalExp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textView6"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="8dp"
-            android:fontFamily="sans-serif-condensed"
-            android:textSize="20sp"
-            android:layout_marginBottom="16dp" />
-
-        <TextView
-            android:id="@+id/textView9"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textView6"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="45dp"
-            android:fontFamily="sans-serif-condensed"
-            android:text="@string/lblBudget"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/txtBudget"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textView9"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="19dp"
-            android:fontFamily="sans-serif-condensed"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/txtBudgetMsg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/txtBudget"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="3dp"
-            android:fontFamily="sans-serif-condensed"
-            android:textColor="@color/red"
-            android:textSize="16sp" />
-
-        <Button
-            android:id="@+id/btnBudget"
-            android:layout_width="131dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/txtBudgetMsg"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="13dp"
-            android:backgroundTint="@color/mustard"
-            android:text="@string/lblSetBudget" />
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/textViewX"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/lblExpensesList"
-        android:fontFamily="sans-serif-black"
-        android:text="@string/lblExpensesList"
-        android:textSize="20sp" />
-
-    <include layout="@layout/expenses_list"/>
-
-    <ListView
-        android:id="@+id/expensesListView"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".DashboardActivity">
 
-</LinearLayout>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="match_parent"
+                android:layout_height="97dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="0dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/yellowbg" />
+
+            <TextView
+                android:id="@+id/txtWelcome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="24dp"
+                android:text="@string/lblWelcome"
+                android:textColor="@color/black"
+                android:textSize="34sp" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/imageView"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="24dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="@string/lblTotalExpenses"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/txtTotalExp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textView6"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif-condensed"
+                android:textSize="20sp"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textView6"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="45dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="@string/lblBudget"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/txtBudget"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textView9"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="19dp"
+                android:fontFamily="sans-serif-condensed"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/txtBudgetMsg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtBudget"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="3dp"
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="@color/red"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/btnBudget"
+                android:layout_width="131dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtBudgetMsg"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="13dp"
+                android:backgroundTint="@color/mustard"
+                android:text="@string/lblSetBudget" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/textViewX"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lblExpensesList"
+            android:fontFamily="sans-serif-black"
+            android:text="@string/lblExpensesList"
+            android:textSize="20sp" />
+
+        <include layout="@layout/expenses_list"/>
+
+        <ListView
+            android:id="@+id/expensesListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigation_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:menu="@menu/nav_drawer" />
+
+</androidx.drawerlayout.widget.DrawerLayout>

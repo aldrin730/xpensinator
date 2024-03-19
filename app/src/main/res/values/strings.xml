@@ -14,7 +14,7 @@
     <string name="lblSetBudget">Set a Budget</string>
     <string name="lblExpensesList">List of Expenses</string>
     <string name="lblTotalExpenses">Total Expenses: </string>
-    <string name="lblWelcome">Welcome, User!</string>
+    <string name="lblWelcome">Welcome, </string>
     <string name="lblRegistration">Register an Account</string>
     <string name="hntExtract">Scanned text will be displayed here</string>
     <string name="nav_open">Open</string>

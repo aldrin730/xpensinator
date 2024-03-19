@@ -32,35 +32,32 @@
         android:id="@+id/txtFirstName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/txtLastName"
-        android:layout_marginBottom="14dp"
+        android:layout_below="@+id/imageView"
+        android:layout_marginTop="41dp"
         android:hint="First Name" />
 
     <EditText
         android:id="@+id/txtLastName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/txtEmail"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="11dp"
+        android:layout_below="@+id/txtFirstName"
+        android:layout_marginTop="22dp"
         android:hint="Last Name" />
 
     <EditText
         android:id="@+id/txtEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/txtPassword"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="11dp"
+        android:layout_below="@+id/txtLastName"
+        android:layout_marginTop="19dp"
         android:hint="Email" />
 
     <EditText
         android:id="@+id/txtPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/btnRegSave"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="67dp"
+        android:layout_below="@+id/txtEmail"
+        android:layout_marginTop="19dp"
         android:hint="Password"
         android:inputType="textPassword" />
 
@@ -68,8 +65,15 @@
         android:id="@+id/btnRegSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="191dp"
+        android:layout_below="@+id/txtPassword"
+        android:layout_marginTop="49dp"
         android:text="Register" />
+
+    <Button
+        android:id="@+id/btnLoginAct"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnRegSave"
+        android:layout_marginTop="52dp"
+        android:text="@string/btnLogin" />
 </RelativeLayout>

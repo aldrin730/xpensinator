@@ -15,12 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DBHandler extends SQLiteOpenHelper {
-        private static final int DB_VERSION = 5;
+        private static final int DB_VERSION = 7;
         private static final String DB_NAME = "xpensinator";
         private static final String TABLE_USERS = "Users";
         private static final String TABLE_EXPENSECATEGORIES = "Expense_Categories";
         private static final String TABLE_EXPENSES = "Expenses";
-        private static final String TABLE_BUDGET = "Budget";
 
         // Users Table
         private static final String KEY_USER_ID = "UserID";
@@ -28,6 +27,7 @@ public class DBHandler extends SQLiteOpenHelper {
         private static final String KEY_LAST_NAME = "LastName";
         private static final String KEY_EMAIL = "Email";
         private static final String KEY_PASSWORD = "Password";
+        private static final String KEY_BUDGET_VALUE = "BudgetValue";
         private static final String KEY_REG_DATE = "RegDate";
 
         // Expense Categories Table
@@ -40,12 +40,11 @@ public class DBHandler extends SQLiteOpenHelper {
         private static final String KEY_EXPENSE_DATE = "ExpenseDate";
         private static final String KEY_NOTES = "Notes";
 
-        // Budget Table
-        private static final String KEY_BUDGET_ID = "BudgetID";
-        private static final String KEY_BUDGET_VALUE = "BudgetValue";
+        private String currentUserEmail;
 
-        public DBHandler(@Nullable Context context) {
+        public DBHandler(@Nullable Context context, String userEmail) {
             super(context,DB_NAME, null, DB_VERSION);
+            this.currentUserEmail = userEmail;
         }
 
         @Override
@@ -56,6 +55,7 @@ public class DBHandler extends SQLiteOpenHelper {
                     + KEY_LAST_NAME + " TEXT NOT NULL,"
                     + KEY_PASSWORD + " TEXT NOT NULL,"
                     + KEY_EMAIL + " TEXT NOT NULL,"
+                    + KEY_BUDGET_VALUE + " REAL NOT NULL DEFAULT 0,"
                     + KEY_REG_DATE + " DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP"
                     + ")";
             sqLiteDatabase.execSQL(CREATE_TABLE_USERS);
@@ -78,12 +78,6 @@ public class DBHandler extends SQLiteOpenHelper {
                     + ")";
             sqLiteDatabase.execSQL(CREATE_TABLE_EXPENSES);
 
-            String CREATE_TABLE_BUDGET = "CREATE TABLE " + TABLE_BUDGET + "("
-                    + KEY_BUDGET_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    + KEY_BUDGET_VALUE + " TEXT NOT NULL"
-                    + ")";
-            sqLiteDatabase.execSQL(CREATE_TABLE_BUDGET);
-
             prepopulateExpenseCategories(sqLiteDatabase);
         }
 
@@ -93,7 +87,6 @@ public class DBHandler extends SQLiteOpenHelper {
             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_EXPENSES);
             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_EXPENSECATEGORIES);
             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
-            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_BUDGET);
 
             // Create tables again
             onCreate(sqLiteDatabase);
@@ -106,16 +99,42 @@ public class DBHandler extends SQLiteOpenHelper {
             }
         }
 
-        void insertUser(String firstName, String lastName, String password, String email, String regDate) {
+        void insertUser(String firstName, String lastName, String password, String email, double budget, String regDate) {
             SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
             ContentValues cValues = new ContentValues();
             cValues.put(KEY_FIRST_NAME, firstName);
             cValues.put(KEY_LAST_NAME, lastName);
             cValues.put(KEY_PASSWORD, password);
             cValues.put(KEY_EMAIL, email);
+            cValues.put(KEY_BUDGET_VALUE, budget);
             cValues.put(KEY_REG_DATE, regDate);
             long userId = sqLiteDatabase.insert(TABLE_USERS,null, cValues);
             sqLiteDatabase.close();
+        }
+
+        private double getCurrentUserBudget(String email, String password) {
+            SQLiteDatabase db = this.getReadableDatabase();
+            double budget = 0.0;
+            Cursor cursor = null;
+
+            try {
+                String query = "SELECT " + KEY_BUDGET_VALUE + " FROM " + TABLE_USERS +
+                        " WHERE " + KEY_EMAIL + " = ?" +
+                        " AND " + KEY_PASSWORD + " = ?";
+                cursor = db.rawQuery(query, new String[]{email, password});
+                if (cursor.moveToFirst()) {
+                    budget = cursor.getDouble(cursor.getColumnIndex(KEY_BUDGET_VALUE));
+                }
+            } catch (SQLException e) {
+                Log.e("DBHandler", "Error retrieving user budget: " + e.getMessage());
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
+                db.close();
+            }
+
+            return budget;
         }
 
         void insertExpense(int userId, String expDate, String expCategory, String totalExpense, String notes) {
@@ -129,6 +148,31 @@ public class DBHandler extends SQLiteOpenHelper {
             long expenseId = sqLiteDatabase.insert(TABLE_EXPENSES,null, cValues);
             sqLiteDatabase.close();
         }
+
+    public int getUserIdByEmail(String email) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        int userId = -1;
+        Cursor cursor = null;
+
+        try {
+            // Query to get the user ID based on the email
+            String query = "SELECT " + KEY_USER_ID + " FROM " + TABLE_USERS +
+                    " WHERE " + KEY_EMAIL + " = ?";
+            cursor = db.rawQuery(query, new String[]{email});
+            if (cursor.moveToFirst()) {
+                userId = cursor.getInt(cursor.getColumnIndex(KEY_USER_ID));
+            }
+        } catch (SQLException e) {
+            Log.e("DBHandler", "Error retrieving user ID by email: " + e.getMessage());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+
+        return userId;
+    }
 
         void insertExpenseCategory (SQLiteDatabase sqLiteDatabase, String expCategory) {
             ContentValues cValues = new ContentValues();
@@ -157,14 +201,16 @@ public class DBHandler extends SQLiteOpenHelper {
             return categories;
         }
 
-        public double getTotalExpensesFromDatabase() {
+        public double getTotalExpensesFromDatabase(String userEmail) {
             SQLiteDatabase db = this.getReadableDatabase();
             double totalExpenses = 0.0;
             Cursor cursor = null;
 
             try {
-                String query = "SELECT SUM(" + KEY_TOTAL_EXPENSE + ") FROM " + TABLE_EXPENSES;
-                cursor = db.rawQuery(query, null);
+                String query = "SELECT SUM(" + KEY_TOTAL_EXPENSE + ") FROM " + TABLE_EXPENSES +
+                        " WHERE " + KEY_USER_ID + " = (SELECT " + KEY_USER_ID + " FROM " +
+                        TABLE_USERS + " WHERE " + KEY_EMAIL + " = ?)";
+                cursor = db.rawQuery(query, new String[]{userEmail});
                 if (cursor.moveToFirst()) {
                     totalExpenses = cursor.getDouble(0);
                 }
@@ -180,14 +226,16 @@ public class DBHandler extends SQLiteOpenHelper {
             return totalExpenses;
         }
 
-        public List<String> getAllExpensesFromDatabase() {
+        public List<String> getAllExpensesFromDatabase(String userEmail) {
             List<String> expensesList = new ArrayList<>();
             SQLiteDatabase db = this.getReadableDatabase();
             Cursor cursor = null;
 
             try {
-                String query = "SELECT * FROM " + TABLE_EXPENSES;
-                cursor = db.rawQuery(query, null);
+                String query = "SELECT * FROM " + TABLE_EXPENSES +
+                        " WHERE " + KEY_USER_ID + " = (SELECT " + KEY_USER_ID + " FROM " +
+                        TABLE_USERS + " WHERE " + KEY_EMAIL + " = ?)";
+                cursor = db.rawQuery(query, new String[]{userEmail});
                 if (cursor.moveToFirst()) {
                     do {
                         String expenseDetails = cursor.getString(cursor.getColumnIndex(KEY_EXPENSE_DATE))
@@ -209,29 +257,30 @@ public class DBHandler extends SQLiteOpenHelper {
             return expensesList;
         }
 
-        public double getLastBudget() {
+        public double getLastBudget(String userEmail) {
             SQLiteDatabase db = this.getReadableDatabase();
             double lastBudget = 0.0;
 
-            // Query to get the last budget value
-            String query = "SELECT " + KEY_BUDGET_VALUE + " FROM " + TABLE_BUDGET +
-                    " ORDER BY " + KEY_BUDGET_ID + " DESC LIMIT 1";
-
-            Cursor cursor = db.rawQuery(query, null);
-            if (cursor != null && cursor.moveToFirst()) {
-                lastBudget = cursor.getDouble(cursor.getColumnIndex(KEY_BUDGET_VALUE));
-                cursor.close();
+            try {
+                Cursor cursor = db.query(TABLE_USERS, new String[]{KEY_BUDGET_VALUE}, KEY_EMAIL + " = ?", new String[]{userEmail}, null, null, null);
+                if (cursor != null && cursor.moveToFirst()) {
+                    lastBudget = cursor.getDouble(cursor.getColumnIndex(KEY_BUDGET_VALUE));
+                    cursor.close();
+                }
+            } catch (SQLException e) {
+                Log.e("DBHandler", "Error retrieving last budget: " + e.getMessage());
+            } finally {
+                db.close();
             }
-            db.close();
 
             return lastBudget;
         }
 
-        public void saveBudget(double newBudgetValue) {
+        public void saveBudget(double newBudgetValue, String userEmail) {
             SQLiteDatabase db = this.getWritableDatabase();
             ContentValues values = new ContentValues();
             values.put(KEY_BUDGET_VALUE, newBudgetValue);
-            db.insert(TABLE_BUDGET, null, values);
+            db.update(TABLE_USERS, values, KEY_EMAIL + " = ?", new String[]{userEmail});
             db.close();
         }
 
@@ -261,5 +310,39 @@ public class DBHandler extends SQLiteOpenHelper {
         }
 
         return isValid;
+    }
+
+    public String getFirstName(String email, String password) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String firstName = "";
+
+        Cursor cursor = null;
+
+        try {
+
+            if (email == null || password == null) {
+                Log.e("DBHandler", "Email or password is null");
+                return null;
+            }
+            // Query to select the first name based on email and password
+            String query = "SELECT " + KEY_FIRST_NAME + " FROM " + TABLE_USERS +
+                    " WHERE " + KEY_EMAIL + " = ?" +
+                    " AND " + KEY_PASSWORD + " = ?";
+            cursor = db.rawQuery(query, new String[]{email, password});
+
+            // Check if the cursor has any rows
+            if (cursor != null && cursor.moveToFirst()) {
+                firstName = cursor.getString(cursor.getColumnIndex(KEY_FIRST_NAME));
+            }
+        } catch (SQLException e) {
+            Log.e("DBHandler", "Error retrieving first name: " + e.getMessage());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+
+        return firstName;
     }
 }
