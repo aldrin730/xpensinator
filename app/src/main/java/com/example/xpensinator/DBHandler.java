@@ -338,4 +338,34 @@ public class DBHandler extends SQLiteOpenHelper {
 
         return firstName;
     }
+
+    public List<String> getCategoryLabels() {
+        List<String> categoryLabels = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        try {
+            // Query to select all distinct category names from the Expense_Categories table
+            String query = "SELECT DISTINCT " + KEY_E_CATEGORY_NAME + " FROM " + TABLE_EXPENSECATEGORIES;
+            cursor = db.rawQuery(query, null);
+
+            // Iterate through the cursor to extract category labels
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    String categoryName = cursor.getString(cursor.getColumnIndex(KEY_E_CATEGORY_NAME));
+                    categoryLabels.add(categoryName);
+                } while (cursor.moveToNext());
+            }
+        } catch (SQLException e) {
+            Log.e("DBHandler", "Error retrieving category labels: " + e.getMessage());
+        } finally {
+            // Close cursor and database
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+
+        return categoryLabels;
+    }
 }

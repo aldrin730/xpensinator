@@ -162,22 +162,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         final String email = getIntent().getStringExtra("email");
         int id = item.getItemId();
         if (id == R.id.nav_enter_expense) {
-            // Handle navigation to item 1
             Intent intent1 = new Intent(MainActivity.this, MainActivity.class);
             intent1.putExtra("email", email);
             startActivity(intent1);
         } else if (id == R.id.nav_dashboard) {
-            // Handle navigation to item 2
             Intent intent2 = new Intent(MainActivity.this, DashboardActivity.class);
             intent2.putExtra("email", email);
             startActivity(intent2);
         }
         else if (id == R.id.nav_logout) {
-            // Handle navigation to item 2
             logout();
             return true;
         }
-        // Close the navigation drawer after item selection
+
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }

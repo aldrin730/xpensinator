@@ -103,7 +103,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
         ExpensesAdapter expensesAdapter = new ExpensesAdapter(this, expensesList);
         expensesListView.setAdapter(expensesAdapter);
-       // return formattedLastBudget;
 
         btnGraph.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,30 +112,23 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         });
     }
 
-    public List<String> getExpensesList() {
-        return expensesList;
-    }
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.nav_enter_expense) {
-            // Handle navigation to item 1
             Intent intent1 = new Intent(DashboardActivity.this, MainActivity.class);
             intent1.putExtra("email", email);
             startActivity(intent1);
         } else if (id == R.id.nav_dashboard) {
-            // Handle navigation to item 2
             Intent intent2 = new Intent(DashboardActivity.this, DashboardActivity.class);
             intent2.putExtra("email", email);
             startActivity(intent2);
         }
         else if (id == R.id.nav_logout) {
-            // Handle navigation to item 2
             logout();
             return true;
         }
-        // Close the navigation drawer after item selection
+
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -200,18 +192,14 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
     private void processExpensesDataAndShowGraph() {
         DBHandler dbHandler = new DBHandler(this, email);
-        // Retrieve the expenses data from the ListView
+
         List<String> expensesList = dbHandler.getAllExpensesFromDatabase(email);
 
-        // Check if expenses data is available
         if (expensesList != null && !expensesList.isEmpty()) {
-            // Prepare the data for the bar graph (e.g., extract category and amount)
-            // Pass the data to the GraphActivity and start the activity
             Intent intent = new Intent(DashboardActivity.this, ReportsActivity.class);
             intent.putStringArrayListExtra("expensesList", (ArrayList<String>) expensesList);
             startActivity(intent);
         } else {
-            // Show a message if no expenses data is available
             Toast.makeText(DashboardActivity.this, "No expenses data available", Toast.LENGTH_SHORT).show();
         }
     }

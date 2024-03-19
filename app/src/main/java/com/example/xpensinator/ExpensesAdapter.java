@@ -10,7 +10,7 @@ import android.widget.TextView;
 import java.util.List;
 
 public class ExpensesAdapter extends ArrayAdapter<String> {
-    private List<String> expensesList;
+    public List<String> expensesList;
     private Context context;
 
     public ExpensesAdapter(Context context, List<String> expensesList) {
