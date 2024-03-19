@@ -23,8 +23,12 @@ import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import com.example.xpensinator.ReportsActivity;
+import com.example.xpensinator.DBHandler;
 
 public class DashboardActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     Button btnBudget;
@@ -40,6 +44,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     public DrawerLayout drawerLayout;
     public ActionBarDrawerToggle actionBarDrawerToggle;
     private String email;
+    Button btnGraph;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +57,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         txtBudgetMsg = findViewById(R.id.txtBudgetMsg);
         expensesListView = findViewById(R.id.expensesListView);
         txtWelcome = findViewById(R.id.txtWelcome);
+        btnGraph = findViewById(R.id.btnGraph);
 
         email = getIntent().getStringExtra("email");
         final String password = getIntent().getStringExtra("password");
@@ -98,6 +104,17 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         ExpensesAdapter expensesAdapter = new ExpensesAdapter(this, expensesList);
         expensesListView.setAdapter(expensesAdapter);
        // return formattedLastBudget;
+
+        btnGraph.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                processExpensesDataAndShowGraph();
+            }
+        });
+    }
+
+    public List<String> getExpensesList() {
+        return expensesList;
     }
 
     @Override
@@ -179,6 +196,24 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
         alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    private void processExpensesDataAndShowGraph() {
+        DBHandler dbHandler = new DBHandler(this, email);
+        // Retrieve the expenses data from the ListView
+        List<String> expensesList = dbHandler.getAllExpensesFromDatabase(email);
+
+        // Check if expenses data is available
+        if (expensesList != null && !expensesList.isEmpty()) {
+            // Prepare the data for the bar graph (e.g., extract category and amount)
+            // Pass the data to the GraphActivity and start the activity
+            Intent intent = new Intent(DashboardActivity.this, ReportsActivity.class);
+            intent.putStringArrayListExtra("expensesList", (ArrayList<String>) expensesList);
+            startActivity(intent);
+        } else {
+            // Show a message if no expenses data is available
+            Toast.makeText(DashboardActivity.this, "No expenses data available", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void logout() {

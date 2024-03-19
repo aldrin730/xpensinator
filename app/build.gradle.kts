@@ -41,4 +41,5 @@ dependencies {
     implementation("com.github.dhaval2404:imagepicker:2.1")
     implementation("com.google.mlkit:text-recognition:16.0.0")
     implementation("com.google.android.material:material:1.3.0-alpha03")
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }
