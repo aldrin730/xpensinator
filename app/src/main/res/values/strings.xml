@@ -6,6 +6,7 @@
     <string name="btnClear">Clear</string>
     <string name="btnGraph">Display Graph</string>
     <string name="btnCopy">Copy</string>
+    <string name="btnFilter">Filter</string>
     <string name="btnEnter">Enter Expense</string>
     <string name="lblDate">Date Entered</string>
     <string name="lblAmount">Amount</string>

@@ -368,4 +368,48 @@ public class DBHandler extends SQLiteOpenHelper {
 
         return categoryLabels;
     }
+
+    public List<String> getExpensesForMonth(String userEmail, String selectedMonth) {
+        List<String> expensesList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        try {
+            Log.d("DB_PARAMS", userEmail + " and " + selectedMonth);
+            // Query to select expenses for the specified month and user
+            String query = "SELECT * FROM " + TABLE_EXPENSES +
+                    " WHERE " + KEY_USER_ID + " = (SELECT " + KEY_USER_ID + " FROM " +
+                    TABLE_USERS + " WHERE " + KEY_EMAIL + " = ?)" +
+                    " AND strftime('%Y-%m', " + KEY_EXPENSE_DATE + ") = ?";
+            Log.d("DB_QUERY", "Query: " + query);
+            Log.d("DB_QUERY", "Params: " + userEmail + ", " + selectedMonth);
+            cursor = db.rawQuery(query, new String[]{userEmail, selectedMonth});
+
+            if (cursor != null) {
+                Log.d("DB_RESULT", "Number of rows returned: " + cursor.getCount());
+            }
+
+            // Check if the cursor is not null and has at least one row
+            if (cursor != null && cursor.moveToFirst()) {
+                // Iterate through the cursor to extract expense details
+                do {
+                    String expenseDetails = cursor.getString(cursor.getColumnIndex(KEY_EXPENSE_DATE))
+                            + ", " + cursor.getString(cursor.getColumnIndex(KEY_E_CATEGORY_NAME))
+                            + ", " + cursor.getString(cursor.getColumnIndex(KEY_TOTAL_EXPENSE))
+                            + ", " + cursor.getString(cursor.getColumnIndex(KEY_NOTES));
+                    expensesList.add(expenseDetails);
+                } while (cursor.moveToNext());
+            }
+        } catch (SQLException e) {
+            Log.e("DBHandler", "Error retrieving expenses for month: " + e.getMessage());
+        } finally {
+            // Close cursor and database
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+
+        return expensesList;
+    }
 }

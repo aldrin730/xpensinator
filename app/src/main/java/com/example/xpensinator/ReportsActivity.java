@@ -6,10 +6,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
@@ -19,9 +23,12 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.android.material.navigation.NavigationView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class ReportsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -31,12 +38,24 @@ public class ReportsActivity extends AppCompatActivity implements NavigationView
     private String email;
     public DrawerLayout drawerLayout;
     public ActionBarDrawerToggle actionBarDrawerToggle;
+    Button btnFilter;
+    private Calendar calendar;
+    private DBHandler dbHandler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reports);
 
         barChart = findViewById(R.id.barChart);
+        btnFilter = findViewById(R.id.btnFilter);
+        calendar = Calendar.getInstance();
+
+        btnFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickerDialog();
+            }
+        });
 
         drawerLayout = findViewById(R.id.my_drawer_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
@@ -54,19 +73,21 @@ public class ReportsActivity extends AppCompatActivity implements NavigationView
 
         email = getIntent().getStringExtra("email");
 
-        DBHandler dbHandler = new DBHandler(this, email);
+        dbHandler = new DBHandler(this, email);
+
+        barChart.getDescription().setEnabled(false);
+        barChart.getXAxis().setDrawLabels(false);
 
         List<String> categoryLabels = dbHandler.getCategoryLabels();
 
-        if (categoryLabels != null) {
+        if (categoryLabels != null && expensesList != null && !expensesList.isEmpty()) {
             populateChart();
         } else {
-            Toast.makeText(this, "Category labels list is null", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "No expenses data available", Toast.LENGTH_SHORT).show();
         }
     }
 
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        final String email = getIntent().getStringExtra("email");
         int id = item.getItemId();
         if (id == R.id.nav_enter_expense) {
             Intent intent1 = new Intent(ReportsActivity.this, MainActivity.class);
@@ -93,6 +114,45 @@ public class ReportsActivity extends AppCompatActivity implements NavigationView
         }
         return super.onOptionsItemSelected(item);
     }
+
+    private void showDatePickerDialog() {
+        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, monthOfYear);
+                calendar.set(Calendar.DAY_OF_MONTH, 1); // Set day to 1 to represent the first day of the selected month
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM", Locale.US);
+                String selectedMonth = dateFormat.format(calendar.getTime());
+
+                Toast.makeText(ReportsActivity.this, "Selected month: " + selectedMonth.substring(0, 7), Toast.LENGTH_SHORT).show();
+
+                filterExpenses(selectedMonth);
+            }
+        };
+
+        new DatePickerDialog(
+                ReportsActivity.this,
+                dateSetListener,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+        ).show();
+    }
+
+    private void filterExpenses(String selectedMonth) {
+        if (expensesAdapter != null) {
+            List<String> filteredExpenses = dbHandler.getExpensesForMonth(email, selectedMonth);
+            if (filteredExpenses != null && !filteredExpenses.isEmpty()) {
+                expensesList = filteredExpenses;
+                populateChart();
+            } else {
+                Toast.makeText(this, "No expenses found for the selected month", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
 
     private void logout() {
         email = null;

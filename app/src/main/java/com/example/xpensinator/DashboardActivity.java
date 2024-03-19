@@ -104,6 +104,13 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         ExpensesAdapter expensesAdapter = new ExpensesAdapter(this, expensesList);
         expensesListView.setAdapter(expensesAdapter);
 
+        if (lastBudget < totalExpenses) {
+            txtBudgetMsg.setText("Warning: You have exceeded your budget!");
+            txtBudgetMsg.setVisibility(View.VISIBLE);
+        } else {
+            txtBudgetMsg.setVisibility(View.GONE);
+        }
+
         btnGraph.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -170,7 +177,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                     dbHandler.saveBudget(newBudgetValue, email);
 
                     if (newBudgetValue < totalExpenses) {
-                        txtBudgetMsg.setText("Warning: Budget is less than total expenses!");
+                        txtBudgetMsg.setText("Warning: You have exceeded your budget!");
                         txtBudgetMsg.setVisibility(View.VISIBLE);
                     } else {
                         txtBudgetMsg.setVisibility(View.GONE);
@@ -191,16 +198,22 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     }
 
     private void processExpensesDataAndShowGraph() {
-        DBHandler dbHandler = new DBHandler(this, email);
+        if (email != null) {
+            DBHandler dbHandler = new DBHandler(this, email);
 
-        List<String> expensesList = dbHandler.getAllExpensesFromDatabase(email);
+            List<String> expensesList = dbHandler.getAllExpensesFromDatabase(email);
 
-        if (expensesList != null && !expensesList.isEmpty()) {
-            Intent intent = new Intent(DashboardActivity.this, ReportsActivity.class);
-            intent.putStringArrayListExtra("expensesList", (ArrayList<String>) expensesList);
-            startActivity(intent);
+            if (expensesList != null && !expensesList.isEmpty()) {
+                Intent intent = new Intent(DashboardActivity.this, ReportsActivity.class);
+                intent.putStringArrayListExtra("expensesList", (ArrayList<String>) expensesList);
+                intent.putExtra("email", email);
+                startActivity(intent);
+            } else {
+                Toast.makeText(DashboardActivity.this, "No expenses data available", Toast.LENGTH_SHORT).show();
+            }
         } else {
-            Toast.makeText(DashboardActivity.this, "No expenses data available", Toast.LENGTH_SHORT).show();
+            // Handle the case where email is null
+            Toast.makeText(DashboardActivity.this, "Email is null", Toast.LENGTH_SHORT).show();
         }
     }
 
