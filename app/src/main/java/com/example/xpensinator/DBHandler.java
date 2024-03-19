@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DBHandler extends SQLiteOpenHelper {
-        private static final int DB_VERSION = 7;
+        private static final int DB_VERSION = 8;
         private static final String DB_NAME = "xpensinator";
         private static final String TABLE_USERS = "Users";
         private static final String TABLE_EXPENSECATEGORIES = "Expense_Categories";

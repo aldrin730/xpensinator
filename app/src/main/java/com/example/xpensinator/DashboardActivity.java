@@ -73,7 +73,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
         txtWelcome.setText(getString(R.string.lblWelcome) + " " + firstName);
 
-        double lastBudget = dbHandler.getLastBudget(email);
+        double lastBudget = 0.00;
+
+        lastBudget = dbHandler.getLastBudget(email);
 
         String formattedLastBudget = String.format(Locale.getDefault(), "%.2f", lastBudget);
         txtBudget.setText(formattedLastBudget);
@@ -104,7 +106,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         ExpensesAdapter expensesAdapter = new ExpensesAdapter(this, expensesList);
         expensesListView.setAdapter(expensesAdapter);
 
-        if (lastBudget < totalExpenses) {
+        if (lastBudget != 0.00 && lastBudget < totalExpenses) {
             txtBudgetMsg.setText("Warning: You have exceeded your budget!");
             txtBudgetMsg.setVisibility(View.VISIBLE);
         } else {
