@@ -312,23 +312,16 @@ public class DBHandler extends SQLiteOpenHelper {
         return isValid;
     }
 
-    public String getFirstName(String email, String password) {
+    public String getFirstName(String email) {
         SQLiteDatabase db = this.getReadableDatabase();
         String firstName = "";
 
         Cursor cursor = null;
 
         try {
-
-            if (email == null || password == null) {
-                Log.e("DBHandler", "Email or password is null");
-                return null;
-            }
-            // Query to select the first name based on email and password
             String query = "SELECT " + KEY_FIRST_NAME + " FROM " + TABLE_USERS +
-                    " WHERE " + KEY_EMAIL + " = ?" +
-                    " AND " + KEY_PASSWORD + " = ?";
-            cursor = db.rawQuery(query, new String[]{email, password});
+                    " WHERE " + KEY_EMAIL + " = ?";
+            cursor = db.rawQuery(query, new String[]{email});
 
             // Check if the cursor has any rows
             if (cursor != null && cursor.moveToFirst()) {

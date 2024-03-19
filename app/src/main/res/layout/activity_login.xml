@@ -23,8 +23,8 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="24dp"
-        android:text="Login"
-        android:textColor="@color/black"
+        android:text="Log In"
+        android:textColor="@color/gray"
         android:textSize="34sp" />
 
     <EditText
@@ -50,6 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/txtPasswordLogin"
         android:layout_marginTop="25dp"
+        android:backgroundTint="@color/mustard"
         android:text="Login" />
 
     <Button
@@ -58,5 +59,14 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/btnLogin"
         android:layout_marginTop="25dp"
+        android:backgroundTint="@color/mustard"
         android:text="Register" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnRegister"
+        android:layout_marginTop="54dp"
+        android:src="@drawable/logo" />
 </RelativeLayout>

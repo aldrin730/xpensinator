@@ -55,7 +55,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
         email = getIntent().getStringExtra("email");
         final String password = getIntent().getStringExtra("password");
-        final String firstName = getCurrentUserFirstName(email, password);
+        final String firstName = getCurrentUserFirstName(email);
 
         if (email == null || email.isEmpty()) {
             Toast.makeText(this, "Email is null", Toast.LENGTH_SHORT).show();
@@ -133,9 +133,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         return super.onOptionsItemSelected(item);
     }
 
-    private String getCurrentUserFirstName(String email, String password) {
+    private String getCurrentUserFirstName(String email) {
         DBHandler dbHandler = new DBHandler(this, email);
-        return dbHandler.getFirstName(email, password);
+        return dbHandler.getFirstName(email);
     }
 
     private void showSetBudgetDialog() {

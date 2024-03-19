@@ -25,7 +25,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="24dp"
         android:text="@string/lblRegistration"
-        android:textColor="@color/black"
+        android:textColor="@color/gray"
         android:textSize="34sp" />
 
     <EditText
@@ -67,6 +67,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/txtPassword"
         android:layout_marginTop="49dp"
+        android:backgroundTint="@color/mustard"
         android:text="Register" />
 
     <Button
@@ -74,6 +75,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/btnRegSave"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="25dp"
+        android:backgroundTint="@color/mustard"
         android:text="@string/btnLogin" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnLoginAct"
+        android:layout_marginTop="7dp"
+        android:src="@drawable/logo" />
 </RelativeLayout>
