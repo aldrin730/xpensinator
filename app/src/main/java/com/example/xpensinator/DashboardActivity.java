@@ -132,6 +132,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             Intent intent2 = new Intent(DashboardActivity.this, DashboardActivity.class);
             intent2.putExtra("email", email);
             startActivity(intent2);
+        } else if (id == R.id.nav_projection) {
+            Intent intent2 = new Intent(DashboardActivity.this, ExpenseProjectionActivity.class);
+            intent2.putExtra("email", email);
+            startActivity(intent2);
         }
         else if (id == R.id.nav_logout) {
             logout();
