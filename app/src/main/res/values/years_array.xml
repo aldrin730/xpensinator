@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="years_array">
+        <item>2024</item>
+        <item>2025</item>
+        <item>2026</item>
+        <item>2027</item>
+        <item>2028</item>
+        <item>2029</item>
+        <item>2030</item>
+        <item>2031</item>
+        <item>2032</item>
+        <item>2033</item>
+        <item>2034</item>
+        <item>2035</item>
+        <item>2036</item>
+        <item>2037</item>
+        <item>2038</item>
+        <item>2039</item>
+        <item>2040</item>
+        <item>2041</item>
+        <item>2042</item>
+        <item>2043</item>
+        <item>2044</item>
+        <item>2045</item>
+        <item>2046</item>
+        <item>2047</item>
+        <item>2048</item>
+        <item>2049</item>
+        <item>2050</item>
+        <item>2051</item>
+        <item>2052</item>
+        <item>2053</item>
+        <item>2054</item>
+        <item>2055</item>
+        <item>2056</item>
+        <item>2057</item>
+        <item>2058</item>
+        <item>2059</item>
+        <item>2060</item>
+        <item>2061</item>
+        <item>2062</item>
+        <item>2063</item>
+        <item>2064</item>
+        <item>2065</item>
+        <item></item>
+    </string-array>
+</resources>
