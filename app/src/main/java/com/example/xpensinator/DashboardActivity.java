@@ -233,9 +233,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
         final String email = getIntent().getStringExtra("email");
 
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat monthFormat = new SimpleDateFormat("MM", Locale.getDefault());
-        String selectedMonth = monthFormat.format(calendar.getTime());
+        String tmp_selectedYear = yearSpinner.getSelectedItem().toString();
+        String tmp_selectedMonth = monthSpinner.getSelectedItem().toString();
+        String selectedMonth = tmp_selectedYear + "-" + tmp_selectedMonth;
         btnSaveBudget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -247,6 +247,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
                     DBHandler dbHandler = new DBHandler(DashboardActivity.this, email);
                     dbHandler.saveBudget(newBudgetValue, email, selectedMonth);
+
+//                    // Insert the new budget into the budget table
+//                    dbHandler.insertBudget(dbHandler.getUserIdByEmail(email), selectedMonth, newBudgetValue);
 
                     if (newBudgetValue < totalExpenses) {
                         txtBudgetMsg.setText("Warning: You have exceeded your budget!");

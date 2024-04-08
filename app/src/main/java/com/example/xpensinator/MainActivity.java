@@ -129,7 +129,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         btnClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 txtDisplay.setText("");
+                txtNotes.setText("");
             }
         });
 

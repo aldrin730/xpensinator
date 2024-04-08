@@ -15,11 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DBHandler extends SQLiteOpenHelper {
-    private static final int DB_VERSION = 8;
+    private static final int DB_VERSION = 10;
     private static final String DB_NAME = "xpensinator";
     private static final String TABLE_USERS = "Users";
     private static final String TABLE_EXPENSECATEGORIES = "Expense_Categories";
     private static final String TABLE_EXPENSES = "Expenses";
+    private static final String TABLE_BUDGET = "Budget";
 
     // Users Table
     private static final String KEY_USER_ID = "UserID";
@@ -27,7 +28,6 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String KEY_LAST_NAME = "LastName";
     private static final String KEY_EMAIL = "Email";
     private static final String KEY_PASSWORD = "Password";
-    private static final String KEY_BUDGET_VALUE = "BudgetValue";
     private static final String KEY_REG_DATE = "RegDate";
 
     // Expense Categories Table
@@ -39,6 +39,11 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String KEY_TOTAL_EXPENSE = "TotalExpense";
     private static final String KEY_EXPENSE_DATE = "ExpenseDate";
     private static final String KEY_NOTES = "Notes";
+
+    // Budget Table
+    private static final String KEY_BUDGET_ID = "BudgetID";
+    private static final String KEY_BUDGET_VALUE = "BudgetValue";
+    private static final String KEY_BUDGET_MONTH = "BudgetMonth";
 
     private String currentUserEmail;
 
@@ -55,7 +60,6 @@ public class DBHandler extends SQLiteOpenHelper {
                 + KEY_LAST_NAME + " TEXT NOT NULL,"
                 + KEY_PASSWORD + " TEXT NOT NULL,"
                 + KEY_EMAIL + " TEXT NOT NULL,"
-                + KEY_BUDGET_VALUE + " REAL NOT NULL DEFAULT 0,"
                 + KEY_REG_DATE + " DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP"
                 + ")";
         sqLiteDatabase.execSQL(CREATE_TABLE_USERS);
@@ -78,6 +82,15 @@ public class DBHandler extends SQLiteOpenHelper {
                 + ")";
         sqLiteDatabase.execSQL(CREATE_TABLE_EXPENSES);
 
+        String CREATE_TABLE_BUDGET = "CREATE TABLE " + TABLE_BUDGET + "("
+                + KEY_BUDGET_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_USER_ID + " INTEGER NOT NULL,"
+                + KEY_BUDGET_MONTH + " TEXT NOT NULL,"
+                + KEY_BUDGET_VALUE + " REAL NOT NULL DEFAULT 0,"
+                + "FOREIGN KEY (" + KEY_USER_ID + ") REFERENCES " + TABLE_USERS + "(" + KEY_USER_ID + ") ON UPDATE CASCADE ON DELETE NO ACTION"
+                + ")";
+        sqLiteDatabase.execSQL(CREATE_TABLE_BUDGET);
+
         prepopulateExpenseCategories(sqLiteDatabase);
     }
 
@@ -87,6 +100,7 @@ public class DBHandler extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_EXPENSES);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_EXPENSECATEGORIES);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_BUDGET);
 
         // Create tables again
         onCreate(sqLiteDatabase);
@@ -106,7 +120,6 @@ public class DBHandler extends SQLiteOpenHelper {
         cValues.put(KEY_LAST_NAME, lastName);
         cValues.put(KEY_PASSWORD, password);
         cValues.put(KEY_EMAIL, email);
-        cValues.put(KEY_BUDGET_VALUE, budget);
         cValues.put(KEY_REG_DATE, regDate);
         long userId = sqLiteDatabase.insert(TABLE_USERS,null, cValues);
         sqLiteDatabase.close();
@@ -123,6 +136,16 @@ public class DBHandler extends SQLiteOpenHelper {
         long expenseId = sqLiteDatabase.insert(TABLE_EXPENSES,null, cValues);
         sqLiteDatabase.close();
     }
+
+//    void insertBudget(int userId, String budgetMonth, double budgetValue) {
+//        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+//        ContentValues cValues = new ContentValues();
+//        cValues.put(KEY_USER_ID, userId);
+//        cValues.put(KEY_BUDGET_MONTH, budgetMonth);
+//        cValues.put(KEY_BUDGET_VALUE, budgetValue);
+//        long budgetId = sqLiteDatabase.insert(TABLE_BUDGET,null, cValues);
+//        sqLiteDatabase.close();
+//    }
 
     public int getUserIdByEmail(String email) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -143,7 +166,6 @@ public class DBHandler extends SQLiteOpenHelper {
             if (cursor != null) {
                 cursor.close();
             }
-            db.close();
         }
 
         return userId;
@@ -171,34 +193,8 @@ public class DBHandler extends SQLiteOpenHelper {
         }
 
         cursor.close();
-        db.close();
 
         return categories;
-    }
-
-    public double getTotalExpensesFromDatabase(String userEmail) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        double totalExpenses = 0.0;
-        Cursor cursor = null;
-
-        try {
-            String query = "SELECT SUM(" + KEY_TOTAL_EXPENSE + ") FROM " + TABLE_EXPENSES +
-                    " WHERE " + KEY_USER_ID + " = (SELECT " + KEY_USER_ID + " FROM " +
-                    TABLE_USERS + " WHERE " + KEY_EMAIL + " = ?)";
-            cursor = db.rawQuery(query, new String[]{userEmail});
-            if (cursor.moveToFirst()) {
-                totalExpenses = cursor.getDouble(0);
-            }
-        } catch (SQLException e) {
-            Log.e("DBHandler", "Error retrieving total expenses from database: " + e.getMessage());
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            db.close();
-        }
-
-        return totalExpenses;
     }
 
     public List<String> getAllExpensesFromDatabase(String userEmail) {
@@ -226,7 +222,6 @@ public class DBHandler extends SQLiteOpenHelper {
             if (cursor != null) {
                 cursor.close();
             }
-            db.close();
         }
 
         return expensesList;
@@ -253,7 +248,6 @@ public class DBHandler extends SQLiteOpenHelper {
             if (cursor != null) {
                 cursor.close();
             }
-            db.close();
         }
 
         return totalExpenses;
@@ -264,37 +258,18 @@ public class DBHandler extends SQLiteOpenHelper {
         double lastBudget = 0.0;
 
         try {
-            Cursor cursor = db.query(TABLE_USERS, new String[]{KEY_BUDGET_VALUE},
-                    KEY_EMAIL + " = ? AND strftime('%Y-%m', " + KEY_REG_DATE + ") = ?",
-                    new String[]{userEmail, selectedMonth}, null, null, null);
+            Cursor cursor = db.rawQuery("SELECT " + KEY_BUDGET_VALUE + " FROM " + TABLE_BUDGET
+                            + " WHERE " + KEY_USER_ID + " = (SELECT " + KEY_USER_ID + " FROM " + TABLE_USERS
+                            + " WHERE " + KEY_EMAIL + " = ?) AND " + KEY_BUDGET_MONTH + " = ?",
+                    new String[]{userEmail, selectedMonth});
+
             if (cursor != null && cursor.moveToFirst()) {
                 lastBudget = cursor.getDouble(cursor.getColumnIndex(KEY_BUDGET_VALUE));
                 cursor.close();
             }
         } catch (SQLException e) {
-            Log.e("DBHandler", "Error retrieving last budget for user " + userEmail + " and month " + selectedMonth + ": " + e.getMessage());
+            Log.e("DBHandler", "Error retrieving last budget for month: " + e.getMessage());
         } finally {
-            db.close();
-        }
-
-        return lastBudget;
-    }
-
-
-    public double getLastBudget(String userEmail) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        double lastBudget = 0.0;
-
-        try {
-            Cursor cursor = db.query(TABLE_USERS, new String[]{KEY_BUDGET_VALUE}, KEY_EMAIL + " = ?", new String[]{userEmail}, null, null, null);
-            if (cursor != null && cursor.moveToFirst()) {
-                lastBudget = cursor.getDouble(cursor.getColumnIndex(KEY_BUDGET_VALUE));
-                cursor.close();
-            }
-        } catch (SQLException e) {
-            Log.e("DBHandler", "Error retrieving last budget: " + e.getMessage());
-        } finally {
-            db.close();
         }
 
         return lastBudget;
@@ -302,18 +277,36 @@ public class DBHandler extends SQLiteOpenHelper {
 
     public void saveBudget(double newBudgetValue, String userEmail, String selectedMonth) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(KEY_BUDGET_VALUE, newBudgetValue);
-        int rowsAffected = db.update(TABLE_USERS, values,
-                KEY_EMAIL + " = ? AND strftime('%Y-%m', " + KEY_REG_DATE + ") = ?",
-                new String[]{userEmail, selectedMonth});
-        db.close();
+        Cursor cursor = null;
 
-        if (rowsAffected > 0) {
-            Log.d("DBHandler", "Budget updated successfully for user " + userEmail + " and month " + selectedMonth
-                    + ". New budget value: " + newBudgetValue);
-        } else {
-            Log.e("DBHandler", "Failed to update budget for user " + userEmail + " and month " + selectedMonth);
+        try {
+            ContentValues values = new ContentValues();
+            values.put(KEY_BUDGET_VALUE, newBudgetValue);
+
+            // Check if a budget record already exists for the selected month
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_BUDGET + " WHERE "
+                            + KEY_USER_ID + " = (SELECT " + KEY_USER_ID + " FROM " + TABLE_USERS
+                            + " WHERE " + KEY_EMAIL + " = ?) AND " + KEY_BUDGET_MONTH + " = ?",
+                    new String[]{userEmail, selectedMonth});
+
+            if (cursor != null && cursor.moveToFirst()) {
+                // If a record exists, update the budget value
+                db.update(TABLE_BUDGET, values,
+                        KEY_USER_ID + " = (SELECT " + KEY_USER_ID + " FROM " + TABLE_USERS
+                                + " WHERE " + KEY_EMAIL + " = ?) AND " + KEY_BUDGET_MONTH + " = ?",
+                        new String[]{userEmail, selectedMonth});
+            } else {
+                // If no record exists, insert a new budget record
+                values.put(KEY_USER_ID, getUserIdByEmail(userEmail));
+                values.put(KEY_BUDGET_MONTH, selectedMonth);
+                db.insert(TABLE_BUDGET, null, values);
+            }
+        } catch (SQLException e) {
+            Log.e("DBHandler", "Error saving budget: " + e.getMessage());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
     }
 
@@ -339,7 +332,6 @@ public class DBHandler extends SQLiteOpenHelper {
             if (cursor != null) {
                 cursor.close();
             }
-            db.close();
         }
 
         return isValid;
@@ -366,7 +358,6 @@ public class DBHandler extends SQLiteOpenHelper {
             if (cursor != null) {
                 cursor.close();
             }
-            db.close();
         }
 
         return firstName;
@@ -396,7 +387,6 @@ public class DBHandler extends SQLiteOpenHelper {
             if (cursor != null) {
                 cursor.close();
             }
-            db.close();
         }
 
         return categoryLabels;
@@ -429,7 +419,6 @@ public class DBHandler extends SQLiteOpenHelper {
             if (cursor != null) {
                 cursor.close();
             }
-            db.close();
         }
 
         return expensesList;
