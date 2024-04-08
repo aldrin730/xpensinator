@@ -88,21 +88,22 @@
             <TextView
                 android:id="@+id/txtBudgetMsg"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="32dp"
                 android:layout_below="@id/txtBudget"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="3dp"
+                android:layout_marginTop="9dp"
                 android:fontFamily="sans-serif-condensed"
                 android:textColor="@color/red"
                 android:textSize="16sp" />
 
             <RelativeLayout
                 android:id="@+id/relLayout1"
-                android:layout_width="347dp"
-                android:layout_height="71dp"
+                android:layout_width="351dp"
+                android:layout_height="63dp"
                 android:layout_below="@id/txtBudgetMsg"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="26dp">
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="29dp">
 
                 <Button
                     android:id="@+id/btnBudget"
@@ -110,8 +111,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
-                    android:layout_marginStart="25dp"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginStart="23dp"
+                    android:layout_marginTop="8dp"
                     android:backgroundTint="@color/mustard"
                     android:text="@string/lblSetBudget" />
 
@@ -121,9 +122,9 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginStart="51dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginEnd="25dp"
+                    android:layout_marginStart="49dp"
+                    android:layout_marginTop="9dp"
+                    android:layout_marginEnd="28dp"
                     android:layout_toEndOf="@id/btnBudget"
                     android:backgroundTint="@color/mustard"
                     android:text="@string/btnGraph" />
@@ -142,8 +143,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
-                    android:layout_marginTop="30dp"
-                    android:layout_marginEnd="25dp"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginEnd="49dp"
                     android:layout_marginBottom="16dp"
                     android:layout_toStartOf="@+id/monthSpinner" />
 
@@ -152,25 +153,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="30dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="16dp"
-                    android:layout_toStartOf="@+id/btnFilter2" />
-
-                <Button
-                    android:id="@+id/btnFilter2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignParentBottom="true"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="19dp"
-                    android:layout_marginEnd="31dp"
-                    android:layout_marginBottom="9dp"
-                    android:backgroundTint="@color/mustard"
-                    android:text="@string/btnFilter" />
+                    android:layout_marginTop="25dp"
+                    android:layout_marginEnd="72dp"
+                    android:layout_marginBottom="16dp" />
+
             </RelativeLayout>
         </RelativeLayout>
 

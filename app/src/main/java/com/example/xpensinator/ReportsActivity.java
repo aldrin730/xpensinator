@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
@@ -23,9 +24,11 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.android.material.navigation.NavigationView;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -41,6 +44,8 @@ public class ReportsActivity extends AppCompatActivity implements NavigationView
     Button btnFilter;
     private Calendar calendar;
     private DBHandler dbHandler;
+    TextView txtSelectedMonth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +54,7 @@ public class ReportsActivity extends AppCompatActivity implements NavigationView
         barChart = findViewById(R.id.barChart);
         btnFilter = findViewById(R.id.btnFilter);
         calendar = Calendar.getInstance();
+        txtSelectedMonth = findViewById(R.id.txtSelectedMonth);
 
         btnFilter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,6 +131,23 @@ public class ReportsActivity extends AppCompatActivity implements NavigationView
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM", Locale.US);
                 String selectedMonth = dateFormat.format(calendar.getTime());
+
+                try {
+                    // Convert selectedMonth string to a Date object
+                    SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM", Locale.US);
+                    Date date = inputFormat.parse(selectedMonth);
+
+                    // Create a new SimpleDateFormat object to format the date to "MMMM yyyy" format
+                    SimpleDateFormat outputFormat = new SimpleDateFormat("MMMM yyyy", Locale.US);
+
+                    // Format the date to the desired format
+                    String formattedMonth = outputFormat.format(date);
+
+                    // Set the formatted month text to your TextView
+                    txtSelectedMonth.setText(formattedMonth);
+                } catch (ParseException e) {
+                    e.printStackTrace(); // Handle the exception as per your application's requirement
+                }
 
                 Toast.makeText(ReportsActivity.this, "Selected month: " + selectedMonth.substring(0, 7), Toast.LENGTH_SHORT).show();
 

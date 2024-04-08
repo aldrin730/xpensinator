@@ -49,7 +49,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     public ActionBarDrawerToggle actionBarDrawerToggle;
     private String email;
     Button btnGraph;
-    Button btnFilter2;
     Spinner monthSpinner, yearSpinner;
 
     @Override
@@ -64,7 +63,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         expensesListView = findViewById(R.id.expensesListView);
         txtWelcome = findViewById(R.id.txtWelcome);
         btnGraph = findViewById(R.id.btnGraph);
-        btnFilter2 = findViewById(R.id.btnFilter2);
         monthSpinner = findViewById(R.id.monthSpinner);
         yearSpinner = findViewById(R.id.yearSpinner);
 
@@ -142,19 +140,19 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         monthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // updateExpensesList(getSelectedMonth());
+                String selectedMonth = filterExpensesByMonth();
+                updateBudgetWarning(selectedMonth);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-        btnFilter2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                filterExpensesByMonth();
-            }
-        });
+
+        String tmp_selectedYear = yearSpinner.getSelectedItem().toString();
+        String tmp_selectedMonth = monthSpinner.getSelectedItem().toString();
+        String selectedMonth = tmp_selectedYear + "-" + tmp_selectedMonth;
+        updateBudgetWarning(selectedMonth);
 
         if (lastBudget != 0.00 && lastBudget < totalExpenses) {
             txtBudgetMsg.setText("Warning: You have exceeded your budget!");
@@ -295,6 +293,31 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
         expensesAdapter = new ExpensesAdapter(this, expensesForMonth);
         expensesListView.setAdapter(expensesAdapter);
+    }
+
+    private void updateBudgetWarning(String selectedMonth) {
+        DBHandler dbHandler = new DBHandler(this, email);
+        double totalExpenses = dbHandler.getTotalExpensesForMonth(email, selectedMonth);
+
+        // Get the budget value for the selected month
+        double budgetValue = dbHandler.getLastBudgetForMonth(email, selectedMonth);
+
+        // Compare total expenses with the budget value
+        if (budgetValue != 0.00 && totalExpenses > budgetValue) {
+            // If total expenses exceed the budget, show the warning message
+            txtBudgetMsg.setText("Warning: You have exceeded your budget!");
+            txtBudgetMsg.setVisibility(View.VISIBLE);
+        } else {
+            // Otherwise, hide the warning message
+            txtBudgetMsg.setVisibility(View.GONE);
+        }
+    }
+
+    protected void onResume() {
+        super.onResume();
+        // Update the budget warning message when the activity is resumed
+        String selectedMonth = filterExpensesByMonth();
+        updateBudgetWarning(selectedMonth);
     }
 
     private void processExpensesDataAndShowGraph() {

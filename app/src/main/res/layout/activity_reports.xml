@@ -44,12 +44,21 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/imageView"
             android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="284dp"
             android:backgroundTint="@color/mustard"
             android:text="@string/btnFilter" />
+
+        <TextView
+            android:id="@+id/txtSelectedMonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/imageView"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="16dp"
+            android:layout_alignParentEnd="true"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
         <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/barChart"
