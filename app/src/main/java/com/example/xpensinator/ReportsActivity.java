@@ -103,6 +103,10 @@ public class ReportsActivity extends AppCompatActivity implements NavigationView
             Intent intent2 = new Intent(ReportsActivity.this, DashboardActivity.class);
             intent2.putExtra("email", email);
             startActivity(intent2);
+        } else if (id == R.id.nav_projection) {
+            Intent intent3 = new Intent(ReportsActivity.this, ExpenseProjectionActivity.class);
+            intent3.putExtra("email", email);
+            startActivity(intent3);
         }
         else if (id == R.id.nav_logout) {
             logout();
