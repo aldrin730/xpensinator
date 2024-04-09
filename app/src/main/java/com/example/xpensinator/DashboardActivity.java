@@ -213,13 +213,13 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         private String getCurrentYearAndMonth() {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH) + 1; // Month is zero-based, so add 1
+        int month = calendar.get(Calendar.MONTH) + 1;
         return String.format(Locale.getDefault(), "%04d-%02d", year, month);
     }
 
     private String getCurrentMonth() {
         Calendar calendar = Calendar.getInstance();
-        int month = calendar.get(Calendar.MONTH) + 1; // Month is zero-based, so add 1
+        int month = calendar.get(Calendar.MONTH) + 1;
         return String.format(Locale.getDefault(), "%02d", month);
     }
 
@@ -298,23 +298,18 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         DBHandler dbHandler = new DBHandler(this, email);
         double totalExpenses = dbHandler.getTotalExpensesForMonth(email, selectedMonth);
 
-        // Get the budget value for the selected month
         double budgetValue = dbHandler.getLastBudgetForMonth(email, selectedMonth);
 
-        // Compare total expenses with the budget value
         if (budgetValue != 0.00 && totalExpenses > budgetValue) {
-            // If total expenses exceed the budget, show the warning message
             txtBudgetMsg.setText("Warning: You have exceeded your budget!");
             txtBudgetMsg.setVisibility(View.VISIBLE);
         } else {
-            // Otherwise, hide the warning message
             txtBudgetMsg.setVisibility(View.GONE);
         }
     }
 
     protected void onResume() {
         super.onResume();
-        // Update the budget warning message when the activity is resumed
         String selectedMonth = filterExpensesByMonth();
         updateBudgetWarning(selectedMonth);
     }
@@ -324,12 +319,12 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         double totalExpenses = dbHandler.getTotalExpensesForMonth(email, selectedMonth);
         double budget = dbHandler.getLastBudgetForMonth(email, selectedMonth);
 
-        if (totalExpenses > budget) {
+        if (budget != 0.00 && totalExpenses > budget) {
             NotificationHelper notificationHelper = new NotificationHelper(this);
             notificationHelper.createNotification();
         }
 
-        if (totalExpenses > budget) {
+        if (budget != 0.00 && totalExpenses > budget) {
             txtBudgetMsg.setText("Warning: You have exceeded your budget!");
             txtBudgetMsg.setVisibility(View.VISIBLE);
             Toast.makeText(this, "Warning: You have exceeded your budget!", Toast.LENGTH_SHORT).show();
@@ -353,7 +348,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 Toast.makeText(DashboardActivity.this, "No expenses data available", Toast.LENGTH_SHORT).show();
             }
         } else {
-            // Handle the case where email is null
             Toast.makeText(DashboardActivity.this, "Email is null", Toast.LENGTH_SHORT).show();
         }
     }
