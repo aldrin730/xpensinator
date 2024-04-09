@@ -31,6 +31,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import com.example.xpensinator.NotificationHelper;
 import com.example.xpensinator.ReportsActivity;
 import com.example.xpensinator.DBHandler;
 
@@ -41,7 +42,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     TextView txtTotalExp;
     ListView expensesListView;
     ArrayAdapter<String> expensesAdapter;
-    List<String> expensesList;
     TextView txtBudgetMsg;
     double totalExpenses;
     TextView txtWelcome;
@@ -88,6 +88,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
         String formattedLastBudget = String.format(Locale.getDefault(), "%.2f", lastBudget);
         txtBudget.setText(formattedLastBudget);
+
+        checkBudgetExceedance(currentMonth);
 
         drawerLayout = findViewById(R.id.my_drawer_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
@@ -181,9 +183,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             intent2.putExtra("email", email);
             startActivity(intent2);
         } else if (id == R.id.nav_projection) {
-            Intent intent2 = new Intent(DashboardActivity.this, ExpenseProjectionActivity.class);
-            intent2.putExtra("email", email);
-            startActivity(intent2);
+            Intent intent3 = new Intent(DashboardActivity.this, ExpenseProjectionActivity.class);
+            intent3.putExtra("email", email);
+            startActivity(intent3);
         }
         else if (id == R.id.nav_logout) {
             logout();
@@ -245,9 +247,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
                     DBHandler dbHandler = new DBHandler(DashboardActivity.this, email);
                     dbHandler.saveBudget(newBudgetValue, email, selectedMonth);
-
-//                    // Insert the new budget into the budget table
-//                    dbHandler.insertBudget(dbHandler.getUserIdByEmail(email), selectedMonth, newBudgetValue);
 
                     if (newBudgetValue < totalExpenses) {
                         txtBudgetMsg.setText("Warning: You have exceeded your budget!");
@@ -318,6 +317,25 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         // Update the budget warning message when the activity is resumed
         String selectedMonth = filterExpensesByMonth();
         updateBudgetWarning(selectedMonth);
+    }
+
+    private void checkBudgetExceedance(String selectedMonth) {
+        DBHandler dbHandler = new DBHandler(this, email);
+        double totalExpenses = dbHandler.getTotalExpensesForMonth(email, selectedMonth);
+        double budget = dbHandler.getLastBudgetForMonth(email, selectedMonth);
+
+        if (totalExpenses > budget) {
+            NotificationHelper notificationHelper = new NotificationHelper(this);
+            notificationHelper.createNotification();
+        }
+
+        if (totalExpenses > budget) {
+            txtBudgetMsg.setText("Warning: You have exceeded your budget!");
+            txtBudgetMsg.setVisibility(View.VISIBLE);
+            Toast.makeText(this, "Warning: You have exceeded your budget!", Toast.LENGTH_SHORT).show();
+        } else {
+            txtBudgetMsg.setVisibility(View.GONE);
+        }
     }
 
     private void processExpensesDataAndShowGraph() {

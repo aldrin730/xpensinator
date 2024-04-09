@@ -21,4 +21,8 @@
     <string name="hntExtract">Scanned text will be displayed here</string>
     <string name="nav_open">Open</string>
     <string name="nav_close">Close</string>
+    <string name="budget_guide_1">!! Budgeting Guide:
+Figure out what you really need versus what you just want. This helps you make a smart budget.</string>
+    <string name="budget_guide_2">!! Budgeting Guide:
+The 50/30/20 rule encourages you to allocate your income based on your needs, wants, and savings.</string>
 </resources>

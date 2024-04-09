@@ -1,9 +1,15 @@
 package com.example.xpensinator;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -15,20 +21,34 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class ExpenseProjectionActivity extends AppCompatActivity {
+public class ExpenseProjectionActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private Button calculateProjectionButton;
     private TextView projectedExpensesTextView;
     private String email;
     private LineChart lineChart;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expense_projection);
+
+        drawerLayout = findViewById(R.id.my_drawer_layout);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
+
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         email = getIntent().getStringExtra("email");
         DBHandler dbHandler = new DBHandler(this, email);
@@ -45,38 +65,65 @@ public class ExpenseProjectionActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.nav_enter_expense) {
+            Intent intent1 = new Intent(ExpenseProjectionActivity.this, MainActivity.class);
+            intent1.putExtra("email", email);
+            startActivity(intent1);
+        } else if (id == R.id.nav_dashboard) {
+            Intent intent2 = new Intent(ExpenseProjectionActivity.this, DashboardActivity.class);
+            intent2.putExtra("email", email);
+            startActivity(intent2);
+        } else if (id == R.id.nav_projection) {
+            Intent intent3 = new Intent(ExpenseProjectionActivity.this, ExpenseProjectionActivity.class);
+            intent3.putExtra("email", email);
+            startActivity(intent3);
+        }
+        else if (id == R.id.nav_logout) {
+            logout();
+            return true;
+        }
+
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void calculateAndDisplayProjection() {
         DBHandler dbHandler = new DBHandler(this, email);
         List<String> expensesList = dbHandler.getAllExpensesFromDatabase(email);
 
-        // Calculate projected expenses (Example: Average of past expenses)
         double projectedExpenses = calculateProjectedExpenses(expensesList);
 
-        // Display the projected expenses
         projectedExpensesTextView.setText(String.format("Projected Expenses: $%.2f", projectedExpenses));
         updateLineChart(expensesList, projectedExpenses);
     }
 
-    // Example method for calculating projected expenses
     private double calculateProjectedExpenses(List<String> expensesList) {
         if (expensesList.isEmpty()) {
-            return 0.0; // If there are no expenses, return 0
+            return 0.0;
         }
 
-        // Calculate the total expenses
         double totalExpenses = 0;
         for (String expense : expensesList) {
             String[] parts = expense.split(",");
-            double expenseAmount = Double.parseDouble(parts[2]); // Assuming index 2 contains the expense amount
+            double expenseAmount = Double.parseDouble(parts[2]);
             totalExpenses += expenseAmount;
         }
 
-        // Calculate the average
         double averageExpense = totalExpenses / expensesList.size();
 
-        // Assuming projection is based on the average of the last few months
-        // Adjust this logic according to your requirement
-        int numberOfMonths = 3; // Projection based on the last 3 months
+        int numberOfMonths = 3;
         double projectedExpenses = averageExpense * numberOfMonths;
 
         return projectedExpenses;
@@ -84,14 +131,12 @@ public class ExpenseProjectionActivity extends AppCompatActivity {
     private void updateLineChart(List<String> expensesList, double projectedExpenses) {
         ArrayList<Entry> entries = new ArrayList<>();
 
-        // Add existing expenses to the line chart
         for (int i = 0; i < expensesList.size(); i++) {
             String[] parts = expensesList.get(i).split(",");
-            double expenseAmount = Double.parseDouble(parts[2]); // Assuming index 2 contains the expense amount
+            double expenseAmount = Double.parseDouble(parts[2]);
             entries.add(new Entry(i, (float) expenseAmount));
         }
 
-        // Add projected expenses to the line chart
         entries.add(new Entry(expensesList.size(), (float) projectedExpenses));
 
         LineDataSet dataSet = new LineDataSet(entries, "Expenses");
@@ -115,5 +160,13 @@ public class ExpenseProjectionActivity extends AppCompatActivity {
         yAxisRight.setEnabled(false);
 
         lineChart.invalidate();
+    }
+
+    private void logout() {
+        email = null;
+        Intent intent = new Intent(ExpenseProjectionActivity.this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }

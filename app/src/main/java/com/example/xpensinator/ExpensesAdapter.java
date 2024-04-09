@@ -26,23 +26,19 @@ public class ExpensesAdapter extends ArrayAdapter<String> {
             convertView = LayoutInflater.from(context).inflate(R.layout.expenses_list, parent, false);
         }
 
-
         String expense = expensesList.get(position);
 
         String[] parts = expense.split(",");
-
 
         TextView textViewDate = convertView.findViewById(R.id.textViewDate);
         TextView textViewExpenseCategory = convertView.findViewById(R.id.textViewExpenseCategory);
         TextView textViewTotalExpense = convertView.findViewById(R.id.textViewTotalExpense);
         TextView textViewNotes = convertView.findViewById(R.id.textViewNotes);
 
-
         textViewDate.setText(parts[0]);
         textViewExpenseCategory.setText(parts[1]);
         textViewTotalExpense.setText(parts[2]);
         textViewNotes.setText(parts[3]);
-
 
         return convertView;
     }

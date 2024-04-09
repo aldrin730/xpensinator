@@ -127,26 +127,22 @@ public class ReportsActivity extends AppCompatActivity implements NavigationView
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 calendar.set(Calendar.YEAR, year);
                 calendar.set(Calendar.MONTH, monthOfYear);
-                calendar.set(Calendar.DAY_OF_MONTH, 1); // Set day to 1 to represent the first day of the selected month
+                calendar.set(Calendar.DAY_OF_MONTH, 1);
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM", Locale.US);
                 String selectedMonth = dateFormat.format(calendar.getTime());
 
                 try {
-                    // Convert selectedMonth string to a Date object
                     SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM", Locale.US);
                     Date date = inputFormat.parse(selectedMonth);
 
-                    // Create a new SimpleDateFormat object to format the date to "MMMM yyyy" format
                     SimpleDateFormat outputFormat = new SimpleDateFormat("MMMM yyyy", Locale.US);
 
-                    // Format the date to the desired format
                     String formattedMonth = outputFormat.format(date);
 
-                    // Set the formatted month text to your TextView
                     txtSelectedMonth.setText(formattedMonth);
                 } catch (ParseException e) {
-                    e.printStackTrace(); // Handle the exception as per your application's requirement
+                    e.printStackTrace();
                 }
 
                 Toast.makeText(ReportsActivity.this, "Selected month: " + selectedMonth.substring(0, 7), Toast.LENGTH_SHORT).show();

@@ -99,7 +99,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         spnExpCat.setAdapter(adapter);
 
-        // Check and request camera permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
@@ -107,7 +106,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     REQUEST_CAMERA_CODE);
         }
 
-        // Check and request read external storage permission if needed
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
@@ -168,9 +166,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             intent1.putExtra("email", email);
             startActivity(intent1);
         } else if (id == R.id.nav_dashboard) {
-            Intent intent2 = new Intent(MainActivity.this, DashboardActivity.class);
-            intent2.putExtra("email", email);
-            startActivity(intent2);
+            Intent intent3 = new Intent(MainActivity.this, DashboardActivity.class);
+            intent3.putExtra("email", email);
+            startActivity(intent3);
+        }
+            else if (id == R.id.nav_projection) {
+                Intent intent2 = new Intent(MainActivity.this, ExpenseProjectionActivity.class);
+                intent2.putExtra("email", email);
+                startActivity(intent2);
         }
         else if (id == R.id.nav_logout) {
             logout();

@@ -30,27 +30,22 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Get user input
                 String email = txtEmailLogin.getText().toString().trim();
                 String password = txtPasswordLogin.getText().toString().trim();
 
-                // Check if any fields are empty
                 if (email.isEmpty() || password.isEmpty()) {
                     Toast.makeText(LoginActivity.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                // Validate user credentials
                 boolean isValid = dbHandler.checkUser(email, password);
                 if (isValid) {
-                    // Login successful, redirect to dashboard activity
                     Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
                     intent.putExtra("email", email);
                     intent.putExtra("password", password);
                     startActivity(intent);
                     finish();
                 } else {
-                    // Invalid credentials, display error message
                     Toast.makeText(LoginActivity.this, "Invalid email or password", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -63,6 +58,5 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent3);
             }
         });
-        // return formattedDateTime;
     }
 }

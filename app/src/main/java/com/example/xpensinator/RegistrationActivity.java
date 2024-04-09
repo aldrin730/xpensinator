@@ -49,7 +49,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     return;
                 }
 
-                dbHandler.insertUser(firstName, lastName, password, email, 0.00, getCurrentDateTime());
+                dbHandler.insertUser(firstName, lastName, password, email, getCurrentDateTime());
 
                 Toast.makeText(RegistrationActivity.this, "Registration Successful", Toast.LENGTH_SHORT).show();
 
